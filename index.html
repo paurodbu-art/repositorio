@@ -3,370 +3,3066 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Dashboard Audiencias - Juan Valdez</title>
+<title>Audience Intelligence Platform - Mario Hernandez</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
 <style>
-body{margin:0;font-family:'Segoe UI',sans-serif;background:#f5efe7;color:#333;}
-header{background:#9e1b2f;color:white;padding:18px;font-size:22px;font-weight:bold;}
-.hero{height:150px;background:url("https://images.unsplash.com/photo-1447933601403-0c6688de566e");background-size:cover;display:flex;align-items:center;justify-content:center;color:white;font-size:28px;font-weight:bold;}
-.container{display:flex;height:100vh;}
-.sidebar{width:220px;background:#4b2e2b;color:white;padding:20px;}
-.sidebar button{width:100%;padding:12px;margin-bottom:10px;border:none;background:#9e1b2f;color:white;border-radius:6px;cursor:pointer;}
-.sidebar button:hover{background:#c6374a;}
-.content{flex:1;padding:25px;overflow:auto;}
-.kpi{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin-bottom:25px;}
-.card{background:white;padding:20px;border-radius:10px;box-shadow:0 3px 10px rgba(0,0,0,0.08);}
-.big{font-size:28px;color:#9e1b2f;font-weight:bold;}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
-.slider{width:100%;}
-.funnel{display:flex;flex-direction:column;gap:6px;margin-top:20px;}
-.stage{background:#9e1b2f;color:white;padding:12px;border-radius:6px;cursor:pointer;}
-.stage:hover{background:#c6374a;}
-.alert{color:red;font-weight:bold;}
+:root {
+  --navy: #0d1b2e;
+  --navy-mid: #1a2e4a;
+  --navy-light: #2c4264;
+  --gold: #b8922a;
+  --gold-light: #d4a843;
+  --gold-pale: #fdf6e7;
+  --gold-border: #f0d9a0;
+  --ivory: #f9f7f4;
+  --ivory-alt: #f2efe9;
+  --surface: #ffffff;
+  --surface2: #fafaf8;
+  --border: #e8e3da;
+  --text: #0d1b2e;
+  --text-mid: #3a4a5c;
+  --text-muted: #8a9aaa;
+  --green: #1a6e4a;
+  --green-pale: #e6f5ee;
+  --amber: #b05c10;
+  --amber-pale: #fef3e8;
+  --red: #9e1b2e;
+  --red-pale: #fff0f2;
+  --red-border: #fcd5da;
+  --sidebar-w: 256px;
+  --header-h: 64px;
+  --radius: 14px;
+  --radius-sm: 8px;
+  --shadow: 0 2px 12px rgba(13, 27, 46, 0.07), 0 1px 3px rgba(13, 27, 46, 0.04);
+  --shadow-md: 0 4px 24px rgba(13, 27, 46, 0.10), 0 2px 8px rgba(13, 27, 46, 0.06);
+  --shadow-lg: 0 12px 48px rgba(13, 27, 46, 0.14), 0 4px 16px rgba(13, 27, 46, 0.08);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; overflow: hidden; }
+body { font-family: "DM Sans", sans-serif; background: var(--ivory); color: var(--text); display: flex; }
+
+.sidebar {
+  width: var(--sidebar-w);
+  min-width: var(--sidebar-w);
+  background: var(--navy);
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  overflow: hidden;
+  position: relative;
+  z-index: 10;
+}
+.sidebar::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 220px;
+  background: linear-gradient(to top, rgba(184, 146, 42, 0.10), transparent);
+  pointer-events: none;
+}
+.sidebar-brand {
+  padding: 24px 20px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  margin-bottom: 8px;
+}
+.brand-logo { display: flex; align-items: center; gap: 12px; }
+.brand-monogram {
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, var(--gold), #c9a24a);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Playfair Display", serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--navy);
+  letter-spacing: -1px;
+  box-shadow: 0 2px 10px rgba(184, 146, 42, 0.4);
+  flex-shrink: 0;
+}
+.brand-text { display: flex; flex-direction: column; }
+.brand-name { font-family: "Playfair Display", serif; font-size: 16px; font-weight: 600; color: #fff; letter-spacing: 0.3px; }
+.brand-sub { font-size: 10px; font-weight: 500; color: rgba(255, 255, 255, 0.35); text-transform: uppercase; letter-spacing: 1.4px; margin-top: 3px; }
+.nav-section { padding: 8px 14px; font-size: 10px; font-weight: 700; color: rgba(255, 255, 255, 0.22); text-transform: uppercase; letter-spacing: 1.6px; margin: 6px 0 2px; }
+.nav-btn {
+  width: 100%;
+  padding: 10px 14px;
+  margin-bottom: 2px;
+  border: none;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.50);
+  font-family: "DM Sans", sans-serif;
+  font-size: 13.5px;
+  font-weight: 500;
+  text-align: left;
+  border-radius: 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: all 0.18s ease;
+  position: relative;
+}
+.nav-btn .nav-icon { font-size: 15px; width: 20px; text-align: center; opacity: 0.8; }
+.nav-btn:hover { background: rgba(255, 255, 255, 0.06); color: #fff; }
+.nav-btn.active {
+  background: linear-gradient(135deg, rgba(184, 146, 42, 0.25), rgba(184, 146, 42, 0.12));
+  color: var(--gold-light);
+  border: 1px solid rgba(184, 146, 42, 0.25);
+  box-shadow: 0 2px 12px rgba(184, 146, 42, 0.15);
+}
+.nav-btn.active .nav-icon { opacity: 1; }
+.sidebar-footer { margin-top: auto; padding: 16px 16px 20px; border-top: 1px solid rgba(255, 255, 255, 0.07); }
+.sidebar-badge { background: rgba(255, 255, 255, 0.05); border-radius: 10px; padding: 12px 14px; font-size: 11.5px; color: rgba(255, 255, 255, 0.45); line-height: 1.6; }
+.sidebar-badge strong { color: rgba(255, 255, 255, 0.75); display: block; font-size: 12px; }
+
+.main-wrapper { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
+header {
+  height: var(--header-h);
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 0 28px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0;
+}
+.header-left { display: flex; align-items: center; gap: 16px; }
+.header-title { font-family: "Playfair Display", serif; font-size: 15px; font-weight: 600; color: var(--navy); }
+.header-right { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; justify-content: flex-end; }
+.header-chip { background: var(--surface2); border: 1px solid var(--border); padding: 5px 12px; border-radius: 20px; font-size: 12px; color: var(--text-mid); font-weight: 500; }
+.header-live { display: flex; align-items: center; gap: 6px; background: var(--green-pale); border: 1px solid rgba(26, 110, 74, 0.2); padding: 5px 12px; border-radius: 20px; font-size: 12px; color: var(--green); font-weight: 600; }
+.live-dot { width: 7px; height: 7px; background: var(--green); border-radius: 50%; animation: pulse 2s infinite; }
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+.content { flex: 1; padding: 24px 28px; overflow-y: auto; overflow-x: hidden; }
+
+.card { background: var(--surface); border-radius: var(--radius); border: 1px solid var(--border); box-shadow: var(--shadow); padding: 22px 24px; position: relative; overflow: hidden; transition: box-shadow 0.2s, transform 0.2s; }
+.card:hover { box-shadow: var(--shadow-md); }
+.card-accent { position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--gold), var(--navy-light)); }
+.card-title { font-family: "Playfair Display", serif; font-size: 13px; font-weight: 600; color: var(--text-mid); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 6px; }
+.card-subtitle { font-size: 12px; color: var(--text-muted); margin-bottom: 16px; }
+.section-title { font-family: "Playfair Display", serif; font-size: 22px; font-weight: 700; color: var(--navy); letter-spacing: -0.3px; margin-bottom: 4px; }
+.section-sub { font-size: 13.5px; color: var(--text-muted); margin-bottom: 22px; line-height: 1.6; }
+
+.kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 20px; }
+.kpi-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px 20px; box-shadow: var(--shadow); position: relative; overflow: hidden; transition: all 0.2s; cursor: default; }
+.kpi-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+.kpi-card::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--gold), var(--gold-light)); }
+.kpi-label { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+.kpi-value { font-family: "Playfair Display", serif; font-size: 26px; font-weight: 700; color: var(--navy); letter-spacing: -0.5px; margin-bottom: 6px; }
+.kpi-delta { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 600; padding: 2px 8px; border-radius: 20px; }
+.kpi-delta.up { color: var(--green); background: var(--green-pale); }
+.kpi-delta.down { color: var(--red); background: var(--red-pale); }
+.kpi-delta.neutral { color: var(--gold); background: var(--gold-pale); }
+
+.grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; margin-bottom: 18px; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; margin-bottom: 18px; }
+.grid-4 { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px; margin-bottom: 18px; }
+.mb-18 { margin-bottom: 18px; }
+
+.insight-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; margin-bottom: 20px; }
+.insight-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px 18px; box-shadow: var(--shadow); transition: all 0.2s; }
+.insight-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+.insight-icon { width: 36px; height: 36px; border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: 17px; margin-bottom: 10px; }
+.insight-icon.navy { background: rgba(13, 27, 46, 0.07); }
+.insight-icon.gold { background: var(--gold-pale); }
+.insight-icon.green { background: var(--green-pale); }
+.insight-icon.red { background: var(--red-pale); }
+.insight-title { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 4px; }
+.insight-value { font-family: "Playfair Display", serif; font-size: 16px; font-weight: 700; color: var(--navy); margin-bottom: 4px; }
+.insight-desc { font-size: 12px; color: var(--text-muted); line-height: 1.5; }
+
+.rec-block { background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 100%); border-radius: var(--radius); padding: 22px 24px; margin-bottom: 18px; position: relative; overflow: hidden; }
+.rec-block::after { content: ""; position: absolute; top: -40px; right: -40px; width: 200px; height: 200px; border-radius: 50%; background: rgba(184, 146, 42, 0.06); }
+.rec-block-title { font-family: "Playfair Display", serif; font-size: 13px; font-weight: 600; color: rgba(255, 255, 255, 0.55); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+.rec-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.rec-item { background: rgba(255, 255, 255, 0.06); border-radius: 10px; padding: 14px 16px; border: 1px solid rgba(255, 255, 255, 0.09); }
+.rec-item-tag { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; padding: 2px 8px; border-radius: 10px; margin-bottom: 8px; display: inline-block; }
+.rec-item-tag.urgent { background: rgba(158, 27, 46, 0.4); color: #ffb3bc; }
+.rec-item-tag.high { background: rgba(184, 146, 42, 0.3); color: #f5d98b; }
+.rec-item-tag.medium { background: rgba(26, 110, 74, 0.3); color: #7dd9a8; }
+.rec-item p { font-size: 13px; color: rgba(255, 255, 255, 0.82); line-height: 1.55; font-weight: 400; }
+
+.funnel-stage { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 14px 20px; margin-bottom: 8px; display: flex; align-items: center; gap: 16px; transition: all 0.2s; position: relative; overflow: hidden; cursor: default; }
+.funnel-stage:hover { box-shadow: var(--shadow-md); transform: translateX(4px); }
+.funnel-stage-color { width: 4px; border-radius: 4px; align-self: stretch; min-height: 48px; flex-shrink: 0; }
+.funnel-stage-bar-wrap { flex: 1; }
+.funnel-stage-label { font-size: 13px; font-weight: 600; color: var(--navy); margin-bottom: 4px; }
+.funnel-bar { height: 10px; background: var(--ivory-alt); border-radius: 5px; overflow: hidden; margin-top: 6px; }
+.funnel-bar-fill { height: 100%; border-radius: 5px; transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1); }
+.funnel-stage-stats { text-align: right; flex-shrink: 0; min-width: 90px; }
+.funnel-users { font-family: "Playfair Display", serif; font-size: 18px; font-weight: 700; color: var(--navy); }
+.funnel-pct { font-size: 12px; color: var(--text-muted); }
+.funnel-drop { display: flex; align-items: center; gap: 6px; padding: 6px 12px; margin-bottom: 8px; margin-left: 30px; }
+.funnel-drop-line { flex: 1; height: 1px; border-top: 1px dashed var(--border); }
+.funnel-drop-badge { font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 20px; white-space: nowrap; }
+.drop-critical { background: #fee2e2; color: var(--red); }
+.drop-moderate { background: var(--amber-pale); color: var(--amber); }
+.drop-low { background: var(--green-pale); color: var(--green); }
+
+.data-table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+.data-table th { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.8px; padding: 10px 14px; border-bottom: 1px solid var(--border); background: var(--surface2); white-space: nowrap; }
+.data-table td { padding: 12px 14px; border-bottom: 1px solid var(--border); vertical-align: middle; color: var(--text); white-space: nowrap; }
+.data-table tr:last-child td { border-bottom: none; }
+.data-table tbody tr:hover { background: var(--surface2); }
+
+.score-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 700; padding: 3px 9px; border-radius: 20px; }
+.score-high { background: #e0f7ec; color: #1a6e4a; }
+.score-med { background: var(--amber-pale); color: var(--amber); }
+.score-low { background: var(--red-pale); color: var(--red); }
+
+.value-pill { font-size: 11px; font-weight: 700; padding: 3px 9px; border-radius: 10px; text-transform: uppercase; letter-spacing: 0.5px; }
+.val-platinum { background: linear-gradient(135deg, #e8e4de, #f5f0ea); color: var(--navy); border: 1px solid #d4c9bc; }
+.val-gold { background: linear-gradient(135deg, #fef0c7, #fde68a); color: #92400e; border: 1px solid #fbbf24; }
+.val-silver { background: #f3f4f6; color: #6b7280; border: 1px solid #e5e7eb; }
+
+.status-ind { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 600; }
+.status-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+.s-active { color: var(--green); }
+.s-active .status-dot { background: var(--green); }
+.s-warning { color: var(--amber); }
+.s-warning .status-dot { background: var(--amber); }
+.s-alert { color: var(--red); }
+.s-alert .status-dot { background: var(--red); }
+
+.tracker-bar { width: 80px; height: 6px; background: var(--ivory-alt); border-radius: 3px; overflow: hidden; display: inline-block; vertical-align: middle; }
+.tracker-fill { height: 100%; border-radius: 3px; }
+
+.slider-group { margin-bottom: 18px; }
+.slider-group label { display: flex; justify-content: space-between; align-items: center; font-size: 13px; font-weight: 600; color: var(--text-mid); margin-bottom: 8px; }
+.slider-group label span { font-family: "Playfair Display", serif; font-size: 16px; font-weight: 700; color: var(--gold); }
+input[type=range] { width: 100%; height: 6px; border-radius: 3px; -webkit-appearance: none; appearance: none; background: linear-gradient(to right, var(--gold) 0%, var(--gold) 50%, var(--ivory-alt) 50%); outline: none; cursor: pointer; }
+input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 18px; height: 18px; background: var(--gold); border-radius: 50%; border: 3px solid #fff; box-shadow: 0 1px 6px rgba(184, 146, 42, 0.4); cursor: pointer; }
+
+.field-select { padding: 8px 14px; border-radius: var(--radius-sm); border: 1px solid var(--border); font-family: "DM Sans", sans-serif; font-size: 13px; font-weight: 500; color: var(--navy); background: var(--surface); cursor: pointer; outline: none; }
+.field-select:focus { border-color: var(--gold); }
+.search-input { padding: 8px 14px; border-radius: var(--radius-sm); border: 1px solid var(--border); font-family: "DM Sans", sans-serif; font-size: 13px; color: var(--navy); background: var(--surface); outline: none; width: 260px; }
+.search-input:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(184, 146, 42, 0.10); }
+
+.tab-bar { display: flex; gap: 4px; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 0; }
+.tab-btn { padding: 9px 16px; font-size: 13px; font-weight: 600; color: var(--text-muted); border: none; background: transparent; cursor: pointer; border-radius: 8px 8px 0 0; border-bottom: 2px solid transparent; margin-bottom: -1px; transition: all 0.15s; }
+.tab-btn:hover { color: var(--navy); background: var(--surface2); }
+.tab-btn.active { color: var(--gold); border-bottom-color: var(--gold); background: var(--surface); }
+
+.alert-banner { background: var(--red-pale); border: 1px solid var(--red-border); border-radius: var(--radius-sm); padding: 12px 16px; font-size: 13px; color: var(--red); font-weight: 500; display: flex; align-items: flex-start; gap: 10px; line-height: 1.5; }
+.alert-banner.green { background: var(--green-pale); border-color: rgba(26, 110, 74, 0.2); color: var(--green); }
+.alert-banner.gold { background: var(--gold-pale); border-color: rgba(184, 146, 42, 0.25); color: var(--amber); }
+.alert-banner.navy { background: rgba(13, 27, 46, 0.05); border-color: rgba(13, 27, 46, 0.12); color: var(--navy-mid); }
+
+.sim-result { background: var(--surface2); border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px; margin-top: 16px; }
+.sim-result-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; margin-bottom: 14px; }
+.sim-metric { text-align: center; padding: 12px; background: var(--surface); border-radius: 10px; border: 1px solid var(--border); }
+.sim-metric-label { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.7px; margin-bottom: 4px; }
+.sim-metric-val { font-family: "Playfair Display", serif; font-size: 20px; font-weight: 700; color: var(--navy); }
+.sim-narrative { font-size: 13px; color: var(--text-mid); line-height: 1.65; border-top: 1px solid var(--border); padding-top: 14px; }
+
+.modal-overlay { display: none; position: fixed; inset: 0; z-index: 9999; background: rgba(13, 27, 46, 0.55); backdrop-filter: blur(6px); align-items: center; justify-content: center; }
+.modal-overlay.open { display: flex; }
+.modal-box { background: var(--surface); border-radius: 18px; width: 580px; max-height: 90vh; overflow-y: auto; box-shadow: var(--shadow-lg); border: 1px solid var(--border); position: relative; }
+.modal-top { background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 100%); padding: 24px 28px; border-radius: 18px 18px 0 0; position: relative; }
+.modal-top::after { content: ""; position: absolute; bottom: 0; right: 0; width: 160px; height: 100%; background: linear-gradient(to left, rgba(184, 146, 42, 0.08), transparent); }
+.modal-close { position: absolute; top: 18px; right: 22px; width: 30px; height: 30px; background: rgba(255, 255, 255, 0.12); border: none; border-radius: 50%; color: #fff; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.15s; z-index: 2; }
+.modal-close:hover { background: rgba(255, 255, 255, 0.22); }
+.modal-body { padding: 24px 28px; }
+.modal-name { font-family: "Playfair Display", serif; font-size: 20px; font-weight: 700; color: #fff; position: relative; z-index: 2; }
+.modal-id { font-size: 12px; color: rgba(255, 255, 255, 0.45); margin-top: 4px; position: relative; z-index: 2; }
+.modal-tags { display: flex; gap: 8px; margin-top: 12px; position: relative; z-index: 2; flex-wrap: wrap; }
+.modal-tag { font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+.info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+.info-item { background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; }
+.info-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text-muted); margin-bottom: 4px; }
+.info-value { font-size: 14px; font-weight: 600; color: var(--navy); }
+.psy-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+.psy-item { background: var(--surface2); border-left: 3px solid var(--gold); border-radius: 0 8px 8px 0; padding: 10px 12px; }
+.psy-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--navy); margin-bottom: 4px; }
+.psy-value { font-size: 12.5px; color: var(--text-mid); line-height: 1.4; }
+.modal-section-title { font-family: "Playfair Display", serif; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+.modal-rec { background: var(--gold-pale); border: 1px solid var(--gold-border); border-radius: 10px; padding: 14px 16px; }
+.modal-rec p { font-size: 13px; color: var(--amber); line-height: 1.6; }
+
+.channel-row { display: flex; align-items: center; gap: 14px; padding: 14px 0; border-bottom: 1px solid var(--border); }
+.channel-row:last-child { border-bottom: none; }
+.channel-name { font-size: 14px; font-weight: 600; color: var(--navy); min-width: 120px; }
+.channel-bar-wrap { flex: 1; }
+.channel-bar { height: 8px; background: var(--ivory-alt); border-radius: 4px; overflow: hidden; }
+.channel-bar-fill { height: 100%; border-radius: 4px; transition: width 0.6s ease; }
+.channel-meta { min-width: 120px; text-align: right; font-size: 12.5px; color: var(--text-muted); }
+.channel-meta strong { color: var(--navy); font-weight: 700; }
+
+.behavior-list { display: flex; flex-direction: column; gap: 12px; margin-top: 6px; }
+.behavior-item { display: flex; justify-content: space-between; gap: 16px; padding: 12px 14px; border-radius: 10px; background: var(--surface2); border: 1px solid var(--border); }
+.behavior-label { font-size: 12px; color: var(--text-muted); font-weight: 600; }
+.behavior-value { font-size: 14px; color: var(--navy); font-weight: 700; text-align: right; }
+.city-share-list { display: flex; flex-direction: column; gap: 10px; margin-top: 16px; }
+.city-share-row { display: grid; grid-template-columns: 110px 1fr 52px; align-items: center; gap: 10px; }
+.city-share-label { font-size: 12px; font-weight: 700; color: var(--navy); }
+.city-share-bar { height: 8px; border-radius: 999px; background: var(--ivory-alt); overflow: hidden; }
+.city-share-fill { height: 100%; border-radius: 999px; }
+.city-share-val { font-size: 11px; font-weight: 700; color: var(--text-muted); text-align: right; }
+.segment-explainer {
+  margin-top: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.segment-summary {
+  font-size: 12.5px;
+  color: var(--text-mid);
+  line-height: 1.6;
+}
+.segment-highlight-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.segment-highlight {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 10px;
+  border-radius: 999px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--navy);
+}
+.segment-highlight-swatch {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.gender-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 700; padding: 3px 9px; border-radius: 20px; }
+.gender-f { background: #fce7f3; color: #be185d; }
+.gender-m { background: #eff6ff; color: #1d4ed8; }
+.gender-u { background: var(--ivory-alt); color: var(--text-mid); }
+.city-pill { display: inline-flex; align-items: center; gap: 6px; padding: 4px 9px; border-radius: 999px; background: rgba(13, 27, 46, 0.06); color: var(--navy); font-size: 11px; font-weight: 700; }
+.city-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; display: inline-block; }
+.engagement-pill { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 700; padding: 4px 9px; border-radius: 999px; }
+.engagement-high { background: var(--green-pale); color: var(--green); }
+.engagement-mid { background: var(--gold-pale); color: var(--amber); }
+.engagement-low { background: var(--red-pale); color: var(--red); }
+.library-stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-bottom: 14px; }
+.library-stat { background: var(--surface2); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; }
+.library-stat-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text-muted); margin-bottom: 4px; }
+.library-stat-value { font-family: "Playfair Display", serif; font-size: 22px; color: var(--navy); font-weight: 700; }
+.table-scroll { max-height: 500px; overflow: auto; }
+.table-scroll .data-table { min-width: 1380px; }
+.table-scroll .data-table.security-table { min-width: 1480px; }
+.action-btn {
+  background: var(--navy);
+  color: var(--gold-light);
+  border: 1px solid rgba(184, 146, 42, 0.3);
+  border-radius: 6px;
+  padding: 5px 12px;
+  cursor: pointer;
+  font-size: 11.5px;
+  font-weight: 600;
+  font-family: inherit;
+}
+.security-band {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+}
+.security-secure { background: var(--green-pale); color: var(--green); }
+.security-watch { background: var(--gold-pale); color: var(--amber); }
+.security-critical { background: var(--red-pale); color: var(--red); }
+.funnel-diff-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 18px;
+}
+.funnel-diff-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px 18px;
+  box-shadow: var(--shadow);
+  position: relative;
+  overflow: hidden;
+}
+.funnel-diff-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--gold), var(--navy-light));
+}
+.funnel-diff-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.9px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 7px;
+}
+.funnel-diff-value {
+  font-family: "Playfair Display", serif;
+  font-size: 25px;
+  font-weight: 700;
+  color: var(--navy);
+  margin-bottom: 5px;
+}
+.funnel-diff-desc {
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+.funnel-diff-narrative {
+  margin-bottom: 18px;
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 18px;
+}
+.funnel-diff-copy {
+  background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 100%);
+  color: rgba(255, 255, 255, 0.84);
+  border-radius: var(--radius);
+  padding: 20px 22px;
+  box-shadow: var(--shadow);
+  border: 1px solid rgba(184, 146, 42, 0.18);
+}
+.funnel-diff-copy strong {
+  color: var(--gold-light);
+}
+.funnel-diff-copy p {
+  font-size: 13px;
+  line-height: 1.7;
+}
+.funnel-diff-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.funnel-diff-item {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 13px 15px;
+  box-shadow: var(--shadow);
+}
+.funnel-diff-item-title {
+  font-size: 12px;
+  color: var(--navy);
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.funnel-diff-item-text {
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+.command-center-intro {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 18px;
+  margin-bottom: 18px;
+}
+.command-summary-card {
+  background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 100%);
+  color: #fff;
+  border-radius: var(--radius);
+  padding: 22px 24px;
+  border: 1px solid rgba(184, 146, 42, 0.18);
+  box-shadow: var(--shadow);
+  position: relative;
+  overflow: hidden;
+}
+.command-summary-card::after {
+  content: "";
+  position: absolute;
+  right: -40px;
+  top: -40px;
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  background: rgba(184, 146, 42, 0.08);
+}
+.command-summary-title {
+  position: relative;
+  z-index: 1;
+  font-family: "Playfair Display", serif;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.62);
+  margin-bottom: 12px;
+}
+.command-summary-text {
+  position: relative;
+  z-index: 1;
+  font-size: 13px;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.84);
+}
+.command-signal-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+.command-signal {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px 18px;
+  box-shadow: var(--shadow);
+}
+.command-signal-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.9px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+}
+.command-signal-value {
+  font-family: "Playfair Display", serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--navy);
+  margin-bottom: 4px;
+}
+.command-signal-desc {
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+.command-table-wrap {
+  overflow-x: auto;
+}
+.command-table {
+  width: 100%;
+  min-width: 1180px;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+.command-table th {
+  background: var(--surface2);
+  border-bottom: 1px solid var(--border);
+  color: var(--text-muted);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.9px;
+  text-transform: uppercase;
+  padding: 12px 14px;
+  white-space: nowrap;
+}
+.command-table thead tr:first-child th {
+  border-top: 1px solid var(--border);
+}
+.command-table thead tr:first-child th:first-child {
+  border-top-left-radius: 12px;
+}
+.command-table thead tr:first-child th:last-child {
+  border-top-right-radius: 12px;
+}
+.command-table td {
+  padding: 14px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+  background: var(--surface);
+}
+.command-table tbody tr.command-main-row:hover td {
+  background: #fcfbf8;
+}
+.command-stage-cell {
+  min-width: 220px;
+}
+.command-stage-name {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--navy);
+  margin-bottom: 4px;
+}
+.command-stage-index {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(184, 146, 42, 0.14);
+  color: var(--gold);
+  font-size: 11px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.command-stage-note {
+  font-size: 11.5px;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+.command-stage-count {
+  font-family: "Playfair Display", serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--navy);
+}
+.command-value-cell {
+  min-width: 138px;
+}
+.command-cell-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+.command-cell-label {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+.command-cell-val {
+  font-family: "Playfair Display", serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--navy);
+}
+.command-cell-abs {
+  margin-top: 7px;
+  font-size: 11px;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+.command-meter {
+  height: 8px;
+  border-radius: 999px;
+  background: var(--ivory-alt);
+  overflow: hidden;
+}
+.command-meter-fill {
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.35s ease;
+}
+.command-total {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 94px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  border: 1px solid transparent;
+}
+.command-total.ok {
+  background: var(--green-pale);
+  color: var(--green);
+  border-color: rgba(26, 110, 74, 0.16);
+}
+.command-total.warn {
+  background: var(--red-pale);
+  color: var(--red);
+  border-color: rgba(158, 27, 46, 0.18);
+}
+.command-total.near {
+  background: var(--gold-pale);
+  color: var(--amber);
+  border-color: rgba(184, 146, 42, 0.22);
+}
+.command-total-sub {
+  margin-top: 6px;
+  font-size: 11px;
+  color: var(--text-muted);
+}
+.command-toggle {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--surface2);
+  color: var(--navy);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.22s ease, background 0.18s ease, border-color 0.18s ease;
+  font-size: 16px;
+  font-weight: 700;
+}
+.command-toggle:hover {
+  background: rgba(184, 146, 42, 0.10);
+  border-color: rgba(184, 146, 42, 0.24);
+}
+.command-toggle.open {
+  transform: rotate(180deg);
+  background: rgba(184, 146, 42, 0.14);
+  border-color: rgba(184, 146, 42, 0.28);
+  color: var(--gold);
+}
+.command-detail-row td {
+  padding: 0;
+  background: #fcfbf8;
+}
+.command-detail-box {
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: max-height 0.35s ease, opacity 0.28s ease;
+}
+.command-detail-box.open {
+  max-height: 420px;
+  opacity: 1;
+}
+.command-detail-inner {
+  padding: 18px 20px 20px;
+}
+.command-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+.command-detail-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 16px;
+}
+.command-detail-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+.command-detail-text {
+  font-size: 12.5px;
+  color: var(--text-mid);
+  line-height: 1.65;
+}
+.command-tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.command-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 9px;
+  border-radius: 999px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--navy);
+}
+.command-validation-banner {
+  margin-top: 14px;
+}
+
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(13, 27, 46, 0.12); border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(13, 27, 46, 0.25); }
+
+.flex { display: flex; }
+.flex-between { display: flex; justify-content: space-between; align-items: center; }
+.gap-12 { gap: 12px; }
+.mt-4 { margin-top: 4px; }
+.mt-16 { margin-top: 16px; }
+.mb-4 { margin-bottom: 4px; }
+.mb-12 { margin-bottom: 12px; }
+.mb-16 { margin-bottom: 16px; }
+.text-muted { color: var(--text-muted); }
+.text-sm { font-size: 12.5px; }
+.text-xs { font-size: 11.5px; }
+.fw-700 { font-weight: 700; }
+.fw-600 { font-weight: 600; }
+.text-gold { color: var(--gold); }
+.text-green { color: var(--green); }
+.text-red { color: var(--red); }
+.playfair { font-family: "Playfair Display", serif; }
+
+@media (max-width: 1200px) {
+  .grid-2, .grid-3, .grid-4, .insight-grid, .rec-grid, .sim-result-grid, .library-stats, .info-grid, .psy-grid, .command-center-intro, .command-detail-grid, .command-signal-grid, .funnel-diff-grid, .funnel-diff-narrative { grid-template-columns: 1fr; }
+  .content { padding: 18px; }
+  header { padding: 0 18px; }
+}
+
+@media (max-width: 980px) {
+  body { display: block; overflow: auto; }
+  html, body { overflow: auto; }
+  .sidebar { width: 100%; min-width: 100%; }
+  .main-wrapper { min-height: 100vh; }
+  .header-right { gap: 8px; }
+}
 </style>
 </head>
-
 <body>
 
-<header> Análisis de Audiencias — Juan Valdez </header>
-<div class="hero"> ANÁLISIS DE AUDIENCIAS — JUAN VALDEZ </div>
-
-<div class="container">
+<div id="profileModal" class="modal-overlay" onclick="closeProfileModal(event)">
+  <div class="modal-box">
+    <div class="modal-top">
+      <button class="modal-close" onclick="closeProfileModal()">&times;</button>
+      <div class="modal-name" id="modalName">-</div>
+      <div class="modal-id" id="modalId">ID: #MH-0000</div>
+      <div class="modal-tags" id="modalTags"></div>
+    </div>
+    <div class="modal-body">
+      <div class="info-grid">
+        <div class="info-item"><div class="info-label">Edad</div><div class="info-value" id="mAge">-</div></div>
+        <div class="info-item"><div class="info-label">Ocupacion</div><div class="info-value" id="mOcup">-</div></div>
+        <div class="info-item"><div class="info-label">Ticket Promedio</div><div class="info-value text-gold" id="mTicket">-</div></div>
+        <div class="info-item"><div class="info-label">Valor Score</div><div class="info-value" id="mScore">-</div></div>
+        <div class="info-item"><div class="info-label">Ciudad</div><div class="info-value" id="mCity">-</div></div>
+        <div class="info-item"><div class="info-label">Cluster Boutique</div><div class="info-value" id="mCluster">-</div></div>
+        <div class="info-item"><div class="info-label">Canal Preferido</div><div class="info-value" id="mCanal">-</div></div>
+        <div class="info-item"><div class="info-label">Ultima Compra</div><div class="info-value" id="mVisita">-</div></div>
+        <div class="info-item"><div class="info-label">Categoria Favorita</div><div class="info-value" id="mCategoria">-</div></div>
+        <div class="info-item"><div class="info-label">Momento de Compra</div><div class="info-value" id="mMomento">-</div></div>
+      </div>
+      <div class="modal-section-title">Analisis Psicografico - Comportamiento de Lujo</div>
+      <div class="psy-grid">
+        <div class="psy-item"><div class="psy-label">Valores e Identidad</div><div class="psy-value" id="mCreencias">-</div></div>
+        <div class="psy-item"><div class="psy-label">Motivacion de Compra</div><div class="psy-value" id="mMotiv">-</div></div>
+        <div class="psy-item"><div class="psy-label">Driver Aspiracional</div><div class="psy-value" id="mNecesidad">-</div></div>
+        <div class="psy-item"><div class="psy-label">Contexto Experiencial</div><div class="psy-value" id="mExp">-</div></div>
+      </div>
+      <div class="modal-section-title" style="margin-top:18px;">Cuando, Como y Por Que Compra</div>
+      <div class="modal-section-title" style="border:none;padding-bottom:4px;margin-bottom:8px;font-size:10px;">CUANDO COMPRA</div>
+      <div id="mCuando" style="font-size:13px;color:var(--text-mid);margin-bottom:12px;padding:10px 14px;background:var(--surface2);border-radius:8px;border:1px solid var(--border);line-height:1.55;"></div>
+      <div class="modal-section-title" style="border:none;padding-bottom:4px;margin-bottom:8px;font-size:10px;">DONDE COMPRA</div>
+      <div id="mDonde" style="font-size:13px;color:var(--text-mid);margin-bottom:12px;padding:10px 14px;background:var(--surface2);border-radius:8px;border:1px solid var(--border);line-height:1.55;"></div>
+      <div class="modal-section-title" style="border:none;padding-bottom:4px;margin-bottom:8px;font-size:10px;">POR QUE COMPRA</div>
+      <div id="mPorque" style="font-size:13px;color:var(--text-mid);margin-bottom:16px;padding:10px 14px;background:var(--surface2);border-radius:8px;border:1px solid var(--border);line-height:1.55;"></div>
+      <div class="modal-section-title" style="margin-top:4px;">Recomendacion Estrategica del Sistema</div>
+      <div class="modal-rec"><p id="mRec">-</p></div>
+    </div>
+  </div>
+</div>
 
 <div class="sidebar">
-<button onclick="show('home')">Inicio</button>
-<button onclick="show('insights')">Insights Audiencia</button>
-<button onclick="show('audiencias')">Catálogo Audiencias</button>
-<button onclick="show('funnel')">Conversion Funnel</button>
-<button onclick="show('portafolio')">Portafolio Publicitario</button>
+  <div class="sidebar-brand">
+    <div class="brand-logo">
+      <div class="brand-monogram">MH</div>
+      <div class="brand-text">
+        <div class="brand-name">Mario Hernandez</div>
+        <div class="brand-sub">Audience Intelligence</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="nav-section">Inteligencia</div>
+  <button class="nav-btn active" onclick="show('home',this)"><span class="nav-icon">◈</span>Executive Overview</button>
+  <button class="nav-btn" onclick="show('insights',this)"><span class="nav-icon">◉</span>Luxury Consumer Insights</button>
+
+  <div class="nav-section">Audiencias</div>
+  <button class="nav-btn" onclick="show('audiencias',this)"><span class="nav-icon">⊞</span>Audience Catalog</button>
+  <button class="nav-btn" onclick="show('security',this)"><span class="nav-icon">□</span>Security Overview</button>
+  <button class="nav-btn" onclick="show('command-center',this)"><span class="nav-icon">▣</span>Command Center for Audience Analysis</button>
+  <button class="nav-btn" onclick="show('funnel',this)"><span class="nav-icon">▽</span>Conversion Funnel</button>
+
+  <div class="nav-section">Planificacion</div>
+  <button class="nav-btn" onclick="show('portafolio',this)"><span class="nav-icon">◫</span>Media Portfolio</button>
+  <button class="nav-btn" onclick="show('tablero',this)"><span class="nav-icon">⚡</span>Performance Monitor</button>
+
+  <div class="sidebar-footer">
+    <div class="sidebar-badge">
+      <strong>Datos actualizados</strong>
+      <span id="sidebarDate">-</span><br>
+      <span id="sidebarAudienceCount">150 audiencias base del analisis</span>
+    </div>
+  </div>
 </div>
 
-<div class="content">
+<div class="main-wrapper">
+  <header>
+    <div class="header-left">
+      <div class="header-title" id="headerTitle">Luxury Audience Intelligence Overview</div>
+    </div>
+    <div class="header-right">
+      <div class="header-live"><div class="live-dot"></div>Live</div>
+      <div class="header-chip" id="liveDate" style="font-variant-numeric:tabular-nums;">-</div>
+      <div class="header-chip" id="liveClock" style="font-family:'Playfair Display',serif;font-weight:700;color:var(--navy);font-variant-numeric:tabular-nums;min-width:68px;text-align:center;">-</div>
+      <div class="header-chip" style="background:var(--navy);color:var(--gold-light);border-color:var(--navy);font-weight:700;">CMO View</div>
+    </div>
+  </header>
 
-<!-- INICIO -->
-<div id="home">
-<div class="kpi">
-<div class="card"><div class="big">150</div>Usuarios totales</div>
-<div class="card"><div class="big">36</div>Usuarios activos</div>
-<div class="card"><div class="big">5.6</div>Índice de enganche</div>
-<div class="card"><div class="big">6</div>Umbral alerta</div>
-</div>
-<div class="card"><h3>Comportamiento general de la audiencia</h3><canvas id="overviewChart"></canvas></div>
-</div>
+  <div class="content">
+    <div id="home">
+      <div class="section-title">Luxury Audience Intelligence Overview</div>
+      <div class="section-sub">Inteligencia estrategica sobre 150 audiencias premium de Mario Hernandez en Colombia. Ahora el overview incluye enganche total, comportamiento leal, evolucion del engagement y distribucion de segmentos sin categorias duplicadas.</div>
 
-<!-- INSIGHTS -->
-<div id="insights" style="display:none">
-<div class="grid">
-<div class="card"><h3>Territorio</h3><canvas id="territory"></canvas></div>
-<div class="card"><h3>Consumo de café diario</h3><canvas id="cups"></canvas></div>
-<div class="card"><h3>Frecuencia en Juan Valdez</h3><canvas id="frequency"></canvas></div>
-<div class="card"><h3>Motivos de visita</h3><canvas id="motives"></canvas></div>
-<div class="card"><h3>Productos más comprados</h3><canvas id="products"></canvas></div>
-</div>
-</div>
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <div class="kpi-label">High-Value Consumers</div>
+          <div class="kpi-value">84,320</div>
+          <span class="kpi-delta up">▲ 9.4% vs Q1</span>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Audiencias Modeladas</div>
+          <div class="kpi-value" id="overviewAudienceCount">150</div>
+          <span class="kpi-delta neutral" id="overviewCityCount">7 ciudades activas</span>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Enganche Promedio</div>
+          <div class="kpi-value" id="overviewAvgEngagement">-</div>
+          <span class="kpi-delta up" id="overviewEngagementDelta">-</span>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Audiencias Leales</div>
+          <div class="kpi-value" id="overviewLoyalAudiences">-</div>
+          <span class="kpi-delta up" id="overviewLoyalDelta">-</span>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Premium Conversion Rate</div>
+          <div class="kpi-value">3.8%</div>
+          <span class="kpi-delta down">▼ 0.4% vs meta</span>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Global ROAS</div>
+          <div class="kpi-value">5.6×</div>
+          <span class="kpi-delta neutral">Target 5.0× ✓</span>
+        </div>
+      </div>
 
-<!-- AUDIENCIAS -->
-<div id="audiencias" style="display:none">
-<div class="grid">
+      <div class="insight-grid">
+        <div class="insight-card">
+          <div class="insight-icon navy">👜</div>
+          <div class="insight-title">Categoria Lider</div>
+          <div class="insight-value">Bolsos y Carteras</div>
+          <div class="insight-desc">42% del revenue total. Mujer ejecutiva 35-50 sigue liderando, pero ahora con lectura de enganche por audiencia.</div>
+        </div>
+        <div class="insight-card">
+          <div class="insight-icon gold">🎯</div>
+          <div class="insight-title">Enganche Alto</div>
+          <div class="insight-value" id="overviewHighEngagementShare">-</div>
+          <div class="insight-desc">Porcentaje de las 150 audiencias con interaccion alta y posibilidad inmediata de activacion premium.</div>
+        </div>
+        <div class="insight-card">
+          <div class="insight-icon green">🏪</div>
+          <div class="insight-title">Canal Leal</div>
+          <div class="insight-value" id="overviewTopLoyalChannel">-</div>
+          <div class="insight-desc">Canal dominante entre las audiencias leales para enfocar CRM, experiencias de boutique y re-compra.</div>
+        </div>
+        <div class="insight-card">
+          <div class="insight-icon red">📍</div>
+          <div class="insight-title">Ciudad Clave</div>
+          <div class="insight-value" id="overviewTopCity">-</div>
+          <div class="insight-desc">Ubicacion con mayor concentracion de audiencias activas y leales dentro del catalogo de 150 perfiles.</div>
+        </div>
+      </div>
 
-<div class="card">
-<h3>Variables de Engagement</h3>
-<label>UX</label>
-<input type="range" min="1" max="10" value="6" id="ux" class="slider">
-<label>Frecuencia</label>
-<input type="range" min="1" max="10" value="5" id="freq" class="slider">
-<label>Tiempo</label>
-<input type="range" min="1" max="10" value="6" id="time" class="slider">
-<p><b>Índice actual:</b> <span id="indice">5.6</span></p>
-</div>
+      <div class="grid-3 mb-18">
+        <div class="card">
+          <div class="card-accent"></div>
+          <div class="flex-between mb-16">
+            <div>
+              <div class="card-title">Luxury Engagement Trend</div>
+              <div class="card-subtitle">Evolucion agregada del enganche de las 150 audiencias</div>
+            </div>
+          </div>
+          <div style="height:240px;"><canvas id="homeChart"></canvas></div>
+        </div>
+        <div class="card">
+          <div class="card-accent"></div>
+          <div class="card-title mb-12">Premium Segment Distribution</div>
+          <div class="card-subtitle">La segmentacion agrupa las 150 audiencias en macro-bolsas faciles de leer para planeacion y storytelling.</div>
+          <div style="height:240px;"><canvas id="segmentDonut"></canvas></div>
+          <div class="segment-explainer">
+            <div class="segment-summary" id="segmentSummary">La lectura de segmentacion se apoya en la base original del analisis para mostrar donde se concentra el volumen premium.</div>
+            <div class="segment-highlight-list" id="segmentHighlights"></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-accent"></div>
+          <div class="card-title mb-12">Enganche de las 150 Audiencias</div>
+          <div class="card-subtitle">Cuantas audiencias estan en nivel alto, medio y bajo</div>
+          <div style="height:240px;"><canvas id="audienceEngagementChart"></canvas></div>
+        </div>
+      </div>
 
-<div class="card">
-<h3>Comportamiento de la Audiencia</h3>
-<canvas id="behaviorChart"></canvas>
-<p class="alert">⚠ Línea roja = alerta cuando engagement baja de 6</p>
-</div>
+      <div class="grid-2 mb-18">
+        <div class="card">
+          <div class="card-accent"></div>
+          <div class="card-title mb-12">Audiencias Leales - Evolucion de Enganche</div>
+          <div class="card-subtitle">Promedio mensual de las audiencias leales entre Nov 2025 y Abr 2026</div>
+          <div style="height:250px;"><canvas id="loyaltyTrendChart"></canvas></div>
+        </div>
+        <div class="card">
+          <div class="card-accent"></div>
+          <div class="card-title mb-4">Comportamiento de Audiencias Leales</div>
+          <div class="card-subtitle">Sintesis operativa para entender como se comportan y donde se concentran</div>
+          <div class="behavior-list">
+            <div class="behavior-item"><div class="behavior-label">Ticket promedio leal</div><div class="behavior-value" id="loyalAvgTicket">-</div></div>
+            <div class="behavior-item"><div class="behavior-label">Ultima compra promedio</div><div class="behavior-value" id="loyalRecency">-</div></div>
+            <div class="behavior-item"><div class="behavior-label">Categoria mas fuerte</div><div class="behavior-value" id="loyalTopCategory">-</div></div>
+            <div class="behavior-item"><div class="behavior-label">Canal preferido</div><div class="behavior-value" id="loyalPreferredChannel">-</div></div>
+          </div>
+          <div class="city-share-list" id="loyalCityShare"></div>
+        </div>
+      </div>
 
-</div>
-</div>
+      <div class="rec-block">
+        <div class="rec-block-title">◆ Recommended Actions - Sistema de Inteligencia Automatica</div>
+        <div class="rec-grid">
+          <div class="rec-item">
+            <span class="rec-item-tag urgent">Urgente</span>
+            <p>Activar journeys para audiencias con enganche medio y ultima compra superior a 30 dias. Es la franja con mejor balance entre oportunidad y riesgo de perdida.</p>
+          </div>
+          <div class="rec-item">
+            <span class="rec-item-tag high">Alta Prioridad</span>
+            <p>Doblar el esfuerzo de CRM sobre audiencias leales en Bogota y Medellin con piezas exclusivas, acceso anticipado y personal shopper.</p>
+          </div>
+          <div class="rec-item">
+            <span class="rec-item-tag medium">Oportunidad</span>
+            <p>Las audiencias aspiracionales muestran la mayor subida de enganche en visual content. Buen candidato para empujar bundles de entrada y gifting premium.</p>
+          </div>
+        </div>
+      </div>
 
-<!-- FUNNEL -->
-<div id="funnel" style="display:none">
-<div class="card">
-<h3>Conversion Funnel</h3>
-<div class="funnel">
-<div class="stage">1. Población — 10M</div>
-<div class="stage">2. Potential Market — 3M</div>
-<div class="stage">3. Awareness — 2M</div>
-<div class="stage">4. Interest — 900K</div>
-<div class="stage">5. Intention — 400K</div>
-<div class="stage">6. Behavior — 200K</div>
-<div class="stage">7. Engagement — 100K</div>
-<div class="stage">8. Loyalty — 60K</div>
-<div class="stage">9. Advocacy — 30K</div>
-</div>
-</div>
-</div>
+      <div class="card">
+        <div class="card-accent"></div>
+        <div class="flex-between mb-16">
+          <div><div class="card-title">Luxury Consumer Journey - Estado del Funnel</div><div class="card-subtitle">Resumen ejecutivo de perdida por etapa de decision de compra de lujo</div></div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:8px;text-align:center;">
+          <div style="background:var(--surface2);border-radius:10px;padding:12px 6px;border:1px solid var(--border);">
+            <div style="font-size:10px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">Awareness</div>
+            <div class="playfair" style="font-size:18px;font-weight:700;color:var(--navy);">84K</div>
+            <div style="font-size:11px;color:var(--text-muted);">100%</div>
+          </div>
+          <div style="background:var(--surface2);border-radius:10px;padding:12px 6px;border:1px solid var(--border);">
+            <div style="font-size:10px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">Consideration</div>
+            <div class="playfair" style="font-size:18px;font-weight:700;color:var(--navy);">61K</div>
+            <div style="font-size:11px;color:var(--amber);">-27%</div>
+          </div>
+          <div style="background:var(--surface2);border-radius:10px;padding:12px 6px;border:1px solid var(--border);">
+            <div style="font-size:10px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">Desire</div>
+            <div class="playfair" style="font-size:18px;font-weight:700;color:var(--navy);">44K</div>
+            <div style="font-size:11px;color:var(--amber);">-28%</div>
+          </div>
+          <div style="background:var(--surface2);border-radius:10px;padding:12px 6px;border:1px solid var(--border);">
+            <div style="font-size:10px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">Intention</div>
+            <div class="playfair" style="font-size:18px;font-weight:700;color:var(--navy);">28K</div>
+            <div style="font-size:11px;color:var(--red);">-36%</div>
+          </div>
+          <div style="background:var(--surface2);border-radius:10px;padding:12px 6px;border:1px solid var(--border);">
+            <div style="font-size:10px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">Purchase</div>
+            <div class="playfair" style="font-size:18px;font-weight:700;color:var(--navy);">12K</div>
+            <div style="font-size:11px;color:var(--red);">-57%</div>
+          </div>
+          <div style="background:var(--surface2);border-radius:10px;padding:12px 6px;border:1px solid var(--border);">
+            <div style="font-size:10px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">Repeat</div>
+            <div class="playfair" style="font-size:18px;font-weight:700;color:var(--navy);">6.8K</div>
+            <div style="font-size:11px;color:var(--amber);">-43%</div>
+          </div>
+          <div style="background:linear-gradient(135deg,var(--gold-pale),#fff);border-radius:10px;padding:12px 6px;border:1px solid var(--gold-border);">
+            <div style="font-size:10px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">Loyalty</div>
+            <div class="playfair" style="font-size:18px;font-weight:700;color:var(--gold);">3.2K</div>
+            <div style="font-size:11px;color:var(--green);">LTV x4.8</div>
+          </div>
+        </div>
+      </div>
+    </div>
 
-<!-- PORTAFOLIO -->
-<div id="portafolio" style="display:none">
+    <div id="insights" style="display:none">
+      <div class="flex-between mb-18">
+        <div>
+          <div class="section-title">Luxury Consumer Insights</div>
+          <div class="section-sub">Perfil psicografico y comportamiento de compra por segmento de lujo</div>
+        </div>
+        <select class="field-select" id="segmentSelect" onchange="updateInsightData()">
+          <option value="all">Todos los Segmentos Premium</option>
+          <option value="mujer_exec">Mujer Ejecutiva (30-50)</option>
+          <option value="hombre_clasico">Hombre Clasico (40+)</option>
+          <option value="aspiracional">Consumidor Aspiracional (25-35)</option>
+          <option value="regalo">Comprador de Regalo Premium</option>
+        </select>
+      </div>
 
-<div class="kpi">
-<div class="card"><div class="big">$200M</div>Presupuesto Total</div>
-<div class="card"><div class="big" id="roi">18%</div>ROI Estimado</div>
-<div class="card"><div class="big" id="engagementTotal">7.4</div>Engagement Proyectado</div>
-<div class="card"><div class="big" id="riesgoTotal">Medio</div>Riesgo Promedio</div>
-</div>
+      <div class="grid-4 mb-18">
+        <div class="kpi-card"><div class="kpi-label">Average Luxury Ticket</div><div class="kpi-value text-gold playfair" id="insightTicket">$890K</div><div class="text-sm text-muted mt-4">COP por transaccion</div></div>
+        <div class="kpi-card"><div class="kpi-label">Top Category</div><div class="playfair fw-700 mt-4" style="font-size:16px;color:var(--navy);" id="insightProduct">Bolsos y Carteras</div><div class="text-sm text-muted mt-4">Por revenue</div></div>
+        <div class="kpi-card"><div class="kpi-label">Churn Rate</div><div class="kpi-value" id="insightChurn">2.1%</div><div class="text-sm text-green mt-4">▼ 0.3% este mes</div></div>
+        <div class="kpi-card"><div class="kpi-label">Frecuencia Compra</div><div class="kpi-value" id="insightPeak">2.4x/año</div><div class="text-sm text-muted mt-4">Ciclo de lujo</div></div>
+      </div>
 
-<div class="grid">
+      <div class="grid-2 mb-18">
+        <div class="card"><div class="card-accent"></div><div class="card-title mb-12">Luxury Value Attributes - Perfil Psicografico</div><div style="height:280px;"><canvas id="radarChart"></canvas></div></div>
+        <div class="card">
+          <div class="card-accent"></div>
+          <div class="card-title mb-4">Purchase Channel Preference</div>
+          <div class="card-subtitle">Distribucion por canal - Tienda Fisica vs Digital</div>
+          <div id="channelRows" style="margin-top:8px;"></div>
+        </div>
+      </div>
 
-<div class="card">
-<h3>Actores del Ecosistema</h3>
-<p><b>Anunciante:</b> Juan Valdez</p>
-<p><b>Publisher:</b> Spotify Ads</p>
-<p><b>Intermediarios:</b> Google Ads / Meta Ads / DV360</p>
-<p><b>Audiencia:</b> Segmentos definidos previamente</p>
-</div>
+      <div class="grid-2 mb-18">
+        <div class="card">
+          <div class="card-accent"></div>
+          <div class="card-title mb-12">Category Performance by Gender</div>
+          <div style="height:260px;"><canvas id="categoryGenderChart"></canvas></div>
+        </div>
+        <div class="card">
+          <div class="card-accent"></div>
+          <div class="card-title mb-4">Purchase Occasions</div>
+          <div class="card-subtitle">Distribucion por momento y motivacion de compra de lujo</div>
+          <div style="height:240px;"><canvas id="ocasionesChart"></canvas></div>
+        </div>
+      </div>
+    </div>
 
-<div class="card">
-<h3>Asignación de Inversión (Optimización)</h3>
+    <div id="audiencias" style="display:none">
+      <div class="section-title mb-4">Audience Catalog</div>
+      <div class="section-sub">Catalogo de las 150 audiencias premium con ciudad, enganche, estado y comportamiento de compra</div>
 
-<label>Bogotá</label>
-<input type="range" min="0" max="100" value="40" id="invBogota" class="slider">
+      <div class="tab-bar">
+        <button class="tab-btn active" onclick="showCatalogSection('simulador',this)">Scenario Simulator</button>
+        <button class="tab-btn" onclick="showCatalogSection('biblioteca',this)">Audience Library - 150 Perfiles</button>
+      </div>
 
-<label>Medellín</label>
-<input type="range" min="0" max="100" value="30" id="invMedellin" class="slider">
+      <div id="simulador-section">
+        <div class="flex-between mb-18">
+          <div><div class="playfair fw-700" style="font-size:16px;color:var(--navy);">Luxury Scenario Simulator</div><div class="text-sm text-muted mt-4">Simula cambios en percepcion de marca, experiencia en boutique, pricing o contenido visual</div></div>
+          <select class="field-select" id="targetAudience" onchange="updateEngagement()">
+            <option value="mujer_exec">Mujer Ejecutiva Premium</option>
+            <option value="hombre_clasico">Hombre Clasico Tradicional</option>
+            <option value="aspiracional">Consumidor Aspiracional</option>
+            <option value="regalo">Comprador de Regalo</option>
+          </select>
+        </div>
 
-<label>Cali</label>
-<input type="range" min="0" max="100" value="30" id="invCali" class="slider">
+        <div class="grid-2 mb-18">
+          <div class="card">
+            <div class="card-accent"></div>
+            <div class="card-title mb-16">Luxury Engagement Variables</div>
+            <div class="slider-group">
+              <label>Percepcion de Marca (Heritage Score) <span id="valUx">6</span></label>
+              <input type="range" min="1" max="10" value="6" id="ux" oninput="updateEngagement()">
+            </div>
+            <div class="slider-group">
+              <label>Experiencia en Boutique (NPS) <span id="valFreq">5</span></label>
+              <input type="range" min="1" max="10" value="5" id="freq" oninput="updateEngagement()">
+            </div>
+            <div class="slider-group">
+              <label>Relevancia de Contenido Visual <span id="valTime">6</span></label>
+              <input type="range" min="1" max="10" value="6" id="time" oninput="updateEngagement()">
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-accent"></div>
+            <div class="card-title mb-12">Historical Luxury Performance - Dynamic</div>
+            <div style="height:200px;"><canvas id="historyChart"></canvas></div>
+          </div>
+        </div>
 
-<p><b>Total asignado:</b> <span id="totalInv">100</span>%</p>
+        <div class="sim-result">
+          <div class="sim-result-grid">
+            <div class="sim-metric"><div class="sim-metric-label">Est. Reach</div><div class="sim-metric-val" id="reachVal">32k</div></div>
+            <div class="sim-metric"><div class="sim-metric-label">Luxury Score</div><div class="sim-metric-val text-gold" id="indiceVal">5.6</div></div>
+            <div class="sim-metric"><div class="sim-metric-label">Conv. Prediction</div><div class="sim-metric-val" id="convPred">3.8%</div></div>
+            <div class="sim-metric"><div class="sim-metric-label">Revenue Impact</div><div class="sim-metric-val text-green" id="revenueImpact">+$890M</div></div>
+          </div>
+          <div class="sim-narrative" id="simNarrative">Ajusta las variables para ver el escenario proyectado y las decisiones estrategicas recomendadas para este segmento de lujo.</div>
+        </div>
+        <div class="alert-banner gold mt-16" id="engagementAlert">⚡ <span>Ajusta las variables para generar un analisis de escenario personalizado.</span></div>
+      </div>
 
-</div>
+      <div id="biblioteca-section" style="display:none">
+        <div class="flex-between mb-16">
+          <div>
+            <div class="playfair fw-700" style="font-size:16px;color:var(--navy);">Audience Library - High-Value Consumer Profiles</div>
+            <div class="text-sm text-muted mt-4">150 perfiles premium con ciudad, enganche, estado de lealtad y comportamiento de compra</div>
+          </div>
+          <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+            <select class="field-select" id="filterGender" onchange="filterUsers()">
+              <option value="">Todos los generos</option>
+              <option value="Mujer">Mujer</option>
+              <option value="Hombre">Hombre</option>
+            </select>
+            <select class="field-select" id="filterCity" onchange="filterUsers()">
+              <option value="">Todas las ciudades</option>
+            </select>
+            <input type="text" class="search-input" id="searchUser" placeholder="Buscar por ID, segmento, ciudad o categoria..." onkeyup="filterUsers()">
+          </div>
+        </div>
 
-</div>
+        <div class="library-stats">
+          <div class="library-stat"><div class="library-stat-label">Total Audiencias</div><div class="library-stat-value" id="libraryTotalAudiences">150</div></div>
+          <div class="library-stat"><div class="library-stat-label">Leales</div><div class="library-stat-value" id="libraryLoyalAudiences">-</div></div>
+          <div class="library-stat"><div class="library-stat-label">Ciudades</div><div class="library-stat-value" id="libraryCities">-</div></div>
+          <div class="library-stat"><div class="library-stat-label">Enganche Promedio</div><div class="library-stat-value" id="libraryAvgEngagement">-</div></div>
+        </div>
 
-<div class="card">
-<h3>Portafolio de Audiencias</h3>
+        <div class="card">
+          <div class="card-accent"></div>
+          <div class="table-scroll">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Perfil</th>
+                  <th>Ciudad</th>
+                  <th>Genero</th>
+                  <th>Categoria</th>
+                  <th>Enganche</th>
+                  <th>Valor</th>
+                  <th>Estado</th>
+                  <th>Ultima Compra</th>
+                  <th>Ticket</th>
+                  <th>Score</th>
+                  <th>Accion</th>
+                </tr>
+              </thead>
+              <tbody id="userTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
 
-<table style="width:100%;border-collapse:collapse;text-align:center">
-<tr style="background:#9e1b2f;color:white">
-<th>Ciudad</th>
-<th>Inversión %</th>
-<th>Engagement</th>
-<th>Riesgo</th>
-</tr>
+    <div id="funnel" style="display:none">
+      <div class="section-title mb-4">Conversion Funnel</div>
+      <div class="section-sub">Luxury Consumer Journey - Analisis de fuga por etapa de audiencia</div>
+      <div class="alert-banner mb-18" style="border-left:4px solid var(--red);background:var(--red-pale);">
+        🚨 <div><strong>Critical Drop Detected - Intention to Behavior (Trial):</strong> Caida del 90% entre intencion declarada y primera compra. Causa probable: friccion en checkout digital y ausencia de urgencia de compra.</div>
+      </div>
 
-<tr>
-<td>Bogotá</td>
-<td id="b_inv">40%</td>
-<td>8.2</td>
-<td>Medio</td>
-</tr>
+      <div class="funnel-diff-grid">
+        <div class="funnel-diff-card">
+          <div class="funnel-diff-label">Behavior</div>
+          <div class="funnel-diff-value">24,000</div>
+          <div class="funnel-diff-desc">Primera compra o trial completado. Aqui la audiencia ya actuo, pero aun no prueba recurrencia.</div>
+        </div>
+        <div class="funnel-diff-card">
+          <div class="funnel-diff-label">Engagement</div>
+          <div class="funnel-diff-value text-green">18,000</div>
+          <div class="funnel-diff-desc">Clientes activos despues de compra: responden a CRM, boutique, reseñas o referidos.</div>
+        </div>
+        <div class="funnel-diff-card">
+          <div class="funnel-diff-label">Brecha Behavior to Engagement</div>
+          <div class="funnel-diff-value text-red">6,000</div>
+          <div class="funnel-diff-desc">Compradores que entran al trial pero no sostienen relacion activa con la marca.</div>
+        </div>
+        <div class="funnel-diff-card">
+          <div class="funnel-diff-label">Retencion Post-Compra</div>
+          <div class="funnel-diff-value text-gold">75%</div>
+          <div class="funnel-diff-desc">De cada 100 compradores, 75 pasan a engagement y 25 se enfrían despues de la primera accion.</div>
+        </div>
+      </div>
 
-<tr>
-<td>Medellín</td>
-<td id="m_inv">30%</td>
-<td>7.5</td>
-<td>Bajo</td>
-</tr>
+      <div class="funnel-diff-narrative">
+        <div class="funnel-diff-copy">
+          <p><strong>Analisis diferencial:</strong> Behavior mide accion transaccional; Engagement mide continuidad relacional. La diferencia es critica: 24,000 personas compran o prueban, pero solo 18,000 quedan activas. Eso deja una brecha de 6,000 audiencias que ya demostraron intencion suficiente para comprar, pero no recibieron un motivo claro para volver, interactuar o entrar a un ciclo de lealtad.</p>
+        </div>
+        <div class="funnel-diff-list">
+          <div class="funnel-diff-item">
+            <div class="funnel-diff-item-title">Que significa para Mario Hernandez</div>
+            <div class="funnel-diff-item-text">El problema no es solo atraer: es convertir la primera compra en relacion. El lujo necesita seguimiento, asesor, cuidado del producto y contenido editorial post-compra.</div>
+          </div>
+          <div class="funnel-diff-item">
+            <div class="funnel-diff-item-title">Hipotesis de fuga</div>
+            <div class="funnel-diff-item-text">La audiencia actua por deseo o necesidad puntual, pero no recibe suficiente CRM premium, personal shopper, beneficios VIP o ritual de recompra.</div>
+          </div>
+          <div class="funnel-diff-item">
+            <div class="funnel-diff-item-title">Accion recomendada</div>
+            <div class="funnel-diff-item-text">Crear journey post-compra de 30 dias: agradecimiento, cuidado del cuero, recomendacion complementaria, invitacion a boutique y acceso anticipado.</div>
+          </div>
+        </div>
+      </div>
 
-<tr>
-<td>Cali</td>
-<td id="c_inv">30%</td>
-<td>6.8</td>
-<td>Alto</td>
-</tr>
+      <div class="grid-2 mb-18">
+        <div class="card">
+          <div class="card-accent"></div>
+          <div class="card-title mb-16">Luxury Purchase Journey - Drop-off Analysis</div>
 
-</table>
+          <div class="funnel-stage">
+            <div class="funnel-stage-color" style="background:#1a2e4a;"></div>
+            <div class="funnel-stage-bar-wrap">
+              <div class="funnel-stage-label">1 Population</div>
+              <div style="font-size:12px;color:var(--text-muted);">Universo total colombiano - Mercado potencial de consumidores de moda</div>
+              <div class="funnel-bar"><div class="funnel-bar-fill" style="width:100%;background:#1a2e4a;"></div></div>
+            </div>
+            <div class="funnel-stage-stats"><div class="funnel-users">50,000,000</div><div class="funnel-pct">100% base</div></div>
+          </div>
+          <div class="funnel-drop"><div class="funnel-drop-line"></div><span class="funnel-drop-badge drop-low">▼ -98% - Filtro de mercado objetivo</span><div class="funnel-drop-line"></div></div>
 
-<p style="margin-top:15px"><b>Canal líder:</b> <span id="canal">Bogotá</span></p>
+          <div class="funnel-stage">
+            <div class="funnel-stage-color" style="background:var(--navy);"></div>
+            <div class="funnel-stage-bar-wrap">
+              <div class="funnel-stage-label">2 Potential Market</div>
+              <div style="font-size:12px;color:var(--text-muted);">Consumidores con capacidad y afinidad por moda y lujo</div>
+              <div class="funnel-bar"><div class="funnel-bar-fill" style="width:100%;background:var(--navy);"></div></div>
+            </div>
+            <div class="funnel-stage-stats"><div class="funnel-users">1,000,000</div><div class="funnel-pct">2% de pob.</div></div>
+          </div>
+          <div class="funnel-drop"><div class="funnel-drop-line"></div><span class="funnel-drop-badge drop-low">▼ -20% - Cobertura de awareness no universal</span><div class="funnel-drop-line"></div></div>
 
-</div>
+          <div class="funnel-stage">
+            <div class="funnel-stage-color" style="background:#2c4264;"></div>
+            <div class="funnel-stage-bar-wrap">
+              <div class="funnel-stage-label">3 Awareness</div>
+              <div style="font-size:12px;color:var(--text-muted);">Conocen la marca - Publicidad premium, PR, OOH zonas exclusivas</div>
+              <div class="funnel-bar"><div class="funnel-bar-fill" style="width:80%;background:#2c4264;"></div></div>
+            </div>
+            <div class="funnel-stage-stats"><div class="funnel-users">800,000</div><div class="funnel-pct">80% del mercado</div></div>
+          </div>
+          <div class="funnel-drop"><div class="funnel-drop-line"></div><span class="funnel-drop-badge drop-moderate">▼ -50% - Falta de storytelling artesanal diferenciador</span><div class="funnel-drop-line"></div></div>
 
-<!-- NUEVA GRÁFICA -->
-<div class="card">
-<h3>Riesgo vs Retorno (Optimización de Portafolio)</h3>
-<canvas id="portfolioChart"></canvas>
-</div>
+          <div class="funnel-stage">
+            <div class="funnel-stage-color" style="background:var(--gold);"></div>
+            <div class="funnel-stage-bar-wrap">
+              <div class="funnel-stage-label">4 Interest</div>
+              <div style="font-size:12px;color:var(--text-muted);">Interes activo - Visita web, redes sociales, busqueda de producto</div>
+              <div class="funnel-bar"><div class="funnel-bar-fill" style="width:40%;background:var(--gold);"></div></div>
+            </div>
+            <div class="funnel-stage-stats"><div class="funnel-users">400,000</div><div class="funnel-pct">40% del mercado</div></div>
+          </div>
+          <div class="funnel-drop"><div class="funnel-drop-line"></div><span class="funnel-drop-badge drop-moderate">▼ -40% - Sin activacion de urgencia ni scarcity</span><div class="funnel-drop-line"></div></div>
 
-</div>
+          <div class="funnel-stage" style="border:2px solid rgba(176,92,16,0.25);">
+            <div class="funnel-stage-color" style="background:var(--amber);"></div>
+            <div class="funnel-stage-bar-wrap">
+              <div class="funnel-stage-label">5 Intention <span style="font-size:11px;font-style:italic;color:var(--amber);margin-left:6px;">punto critico detectado</span></div>
+              <div style="font-size:12px;color:var(--text-muted);">Intencion declarada de compra - Carrito abandonado, wishlist, visita recurrente a boutique</div>
+              <div class="funnel-bar"><div class="funnel-bar-fill" style="width:24%;background:var(--amber);"></div></div>
+            </div>
+            <div class="funnel-stage-stats"><div class="funnel-users">240,000</div><div class="funnel-pct">24% del mercado</div></div>
+          </div>
+          <div class="funnel-drop"><div class="funnel-drop-line"></div><span class="funnel-drop-badge drop-critical">▼ -90% - Checkout digital con alta friccion</span><div class="funnel-drop-line"></div></div>
 
-</div>
+          <div class="funnel-stage" style="border:2px solid rgba(158,27,46,0.25);">
+            <div class="funnel-stage-color" style="background:var(--red);"></div>
+            <div class="funnel-stage-bar-wrap">
+              <div class="funnel-stage-label">6 Behavior (Trial)</div>
+              <div style="font-size:12px;color:var(--text-muted);">Primera compra completada - Transaccion en boutique o ecommerce luxury</div>
+              <div class="funnel-bar"><div class="funnel-bar-fill" style="width:2.4%;background:var(--red);"></div></div>
+            </div>
+            <div class="funnel-stage-stats"><div class="funnel-users">24,000</div><div class="funnel-pct">2.4% del mercado</div></div>
+          </div>
+          <div class="funnel-drop"><div class="funnel-drop-line"></div><span class="funnel-drop-badge drop-moderate">▼ -25% - Sin flujo de CRM post-compra activado</span><div class="funnel-drop-line"></div></div>
+
+          <div class="funnel-stage">
+            <div class="funnel-stage-color" style="background:var(--green);"></div>
+            <div class="funnel-stage-bar-wrap">
+              <div class="funnel-stage-label">7 Engagement</div>
+              <div style="font-size:12px;color:var(--text-muted);">Clientes activos recurrentes - Interaccion post-compra, resenas, referidos</div>
+              <div class="funnel-bar"><div class="funnel-bar-fill" style="width:1.8%;background:var(--green);"></div></div>
+            </div>
+            <div class="funnel-stage-stats"><div class="funnel-users">18,000</div><div class="funnel-pct">Repeat buyers</div></div>
+          </div>
+          <div class="funnel-drop"><div class="funnel-drop-line"></div><span class="funnel-drop-badge drop-low">▼ -90% - Sin programa de loyalty exclusivo</span><div class="funnel-drop-line"></div></div>
+
+          <div class="funnel-stage" style="background:linear-gradient(to right, var(--gold-pale), var(--surface));">
+            <div class="funnel-stage-color" style="background:var(--gold);"></div>
+            <div class="funnel-stage-bar-wrap">
+              <div class="funnel-stage-label" style="color:var(--gold);">8 Loyalty</div>
+              <div style="font-size:12px;color:var(--text-muted);">Embajadores de marca - LTV maximo - Referidos activos de alto valor</div>
+              <div class="funnel-bar"><div class="funnel-bar-fill" style="width:0.18%;background:var(--gold);"></div></div>
+            </div>
+            <div class="funnel-stage-stats"><div class="funnel-users" style="color:var(--gold);">1,800</div><div class="funnel-pct" style="color:var(--gold);">LTV x4.8</div></div>
+          </div>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:14px;">
+          <div class="card">
+            <div class="card-accent"></div>
+            <div class="card-title mb-12">Drop-off Intelligence by Stage</div>
+            <table class="data-table">
+              <thead><tr><th>Transicion</th><th>Audiencia</th><th>Perdida</th><th>Accion</th></tr></thead>
+              <tbody>
+                <tr><td class="fw-600">Population to Potential Mkt</td><td>50M to 1M</td><td style="color:var(--text-muted);font-weight:700;">Filtro natural</td><td><span class="score-badge score-high">Mercado definido</span></td></tr>
+                <tr><td class="fw-600">Potential Mkt to Awareness</td><td>1M to 800K</td><td style="color:var(--amber);font-weight:700;">-20%</td><td><span class="score-badge score-med">Ampliar OOH</span></td></tr>
+                <tr><td class="fw-600">Awareness to Interest</td><td>800K to 400K</td><td style="color:var(--amber);font-weight:700;">-50%</td><td><span class="score-badge score-med">Storytelling</span></td></tr>
+                <tr><td class="fw-600">Interest to Intention</td><td>400K to 240K</td><td style="color:var(--amber);font-weight:700;">-40%</td><td><span class="score-badge score-med">Scarcity Signal</span></td></tr>
+                <tr><td class="fw-600" style="color:var(--red);">Intention to Behavior</td><td>240K to 24K</td><td style="color:var(--red);font-weight:700;">-90%</td><td><span class="score-badge score-low">UX Critico</span></td></tr>
+                <tr><td class="fw-600">Behavior to Engagement</td><td>24K to 18K</td><td style="color:var(--amber);font-weight:700;">-25%</td><td><span class="score-badge score-med">CRM Premium</span></td></tr>
+                <tr><td class="fw-600">Engagement to Loyalty</td><td>18K to 1.8K</td><td style="color:var(--green);font-weight:700;">-90%</td><td><span class="score-badge score-high">Programa VIP</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="card">
+            <div class="card-accent"></div>
+            <div class="card-title mb-12">Funnel Audience Volume - Escala Logaritmica</div>
+            <div style="height:210px;"><canvas id="funnelChart"></canvas></div>
+          </div>
+          <div class="rec-block" style="margin-bottom:0;">
+            <div class="rec-block-title" style="font-size:11px;">◆ Acciones Prioritarias - Luxury Recovery Plan</div>
+            <div style="display:flex;flex-direction:column;gap:8px;">
+              <div class="rec-item"><span class="rec-item-tag urgent">Critico - Intention to Behavior</span><p style="font-size:12px;">Redisenar checkout con pago en 1 paso, reserve and visit boutique y opcion de financiamiento. Recuperar hasta 80,000 consumidores en intencion.</p></div>
+              <div class="rec-item"><span class="rec-item-tag high">Awareness to Interest</span><p style="font-size:12px;">Activar storytelling artesanal en redes premium y contenido de maestros artesanos colombianos.</p></div>
+              <div class="rec-item"><span class="rec-item-tag medium">Loyalty Program</span><p style="font-size:12px;">Programa VIP exclusivo con acceso anticipado a colecciones, eventos privados y personal shopper.</p></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="security" style="display:none">
+      <div class="section-title mb-4">Security Overview por Audiencia</div>
+      <div class="section-sub">Vista dedicada para revisar el security overview de las 150 audiencias: score, nivel de riesgo, privacidad, fraude potencial y relacion directa con el enganche.</div>
+
+      <div class="kpi-grid mb-18">
+        <div class="kpi-card">
+          <div class="kpi-label">Secure</div>
+          <div class="kpi-value" id="securitySecureCount">-</div>
+          <span class="kpi-delta up">Bajo riesgo</span>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Watch</div>
+          <div class="kpi-value" id="securityWatchCount">-</div>
+          <span class="kpi-delta neutral">Monitoreo</span>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Critical</div>
+          <div class="kpi-value" id="securityCriticalCount">-</div>
+          <span class="kpi-delta down">Intervencion</span>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Avg Security</div>
+          <div class="kpi-value" id="securityAvgScore">-</div>
+          <span class="kpi-delta neutral" id="securityAvgDelta">Promedio del total</span>
+        </div>
+      </div>
+
+      <div class="grid-2 mb-18">
+        <div class="card">
+          <div class="card-accent"></div>
+          <div class="card-title mb-4">Security vs Engagement</div>
+          <div class="card-subtitle">Permite detectar audiencias con buen enganche pero seguridad deficiente, o viceversa.</div>
+          <div style="height:320px;"><canvas id="securityScatterChart"></canvas></div>
+        </div>
+        <div class="card">
+          <div class="card-accent"></div>
+          <div class="card-title mb-4">Security Promedio por Ciudad</div>
+          <div class="card-subtitle">Donde estan las audiencias mas seguras y donde hay que ajustar control, data y exposicion.</div>
+          <div style="height:320px;"><canvas id="securityCityChart"></canvas></div>
+        </div>
+      </div>
+
+      <div class="grid-2 mb-18">
+        <div class="card">
+          <div class="card-accent"></div>
+          <div class="card-title mb-4">Sustento del Enganche</div>
+          <div class="card-subtitle">Variables de seguridad que mas explican si el enganche es sostenible o riesgoso.</div>
+          <div class="behavior-list">
+            <div class="behavior-item"><div class="behavior-label">Enganche alto y security alto</div><div class="behavior-value" id="securitySafeEngaged">-</div></div>
+            <div class="behavior-item"><div class="behavior-label">Enganche alto con riesgo</div><div class="behavior-value" id="securityRiskyEngaged">-</div></div>
+            <div class="behavior-item"><div class="behavior-label">Consent promedio</div><div class="behavior-value" id="securityConsentAvg">-</div></div>
+            <div class="behavior-item"><div class="behavior-label">Fraud risk promedio</div><div class="behavior-value" id="securityFraudAvg">-</div></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-accent"></div>
+          <div class="card-title mb-4">Lectura Ejecutiva</div>
+          <div class="card-subtitle">Resumen simple para conectar seguridad, ciudad y decision comercial.</div>
+          <div class="behavior-list">
+            <div class="behavior-item"><div class="behavior-label">Ciudad mas segura</div><div class="behavior-value" id="securityTopCity">-</div></div>
+            <div class="behavior-item"><div class="behavior-label">Ciudad a vigilar</div><div class="behavior-value" id="securityBottomCity">-</div></div>
+            <div class="behavior-item"><div class="behavior-label">Canal mas seguro</div><div class="behavior-value" id="securityTopChannel">-</div></div>
+            <div class="behavior-item"><div class="behavior-label">Narrativa clave</div><div class="behavior-value" id="securityNarrative">-</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-accent"></div>
+        <div class="card-title mb-4">Detalle de Security por Audiencia</div>
+        <div class="card-subtitle">Cada fila permite abrir el perfil completo con seguridad, brand safety, fraude potencial y recomendacion.</div>
+        <div class="table-scroll">
+          <table class="data-table security-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Perfil</th>
+                <th>Ciudad</th>
+                <th>Engagement</th>
+                <th>Security Score</th>
+                <th>Estado</th>
+                <th>Consent</th>
+                <th>Fraud Risk</th>
+                <th>Brand Safety</th>
+                <th>Privacidad</th>
+                <th>Accion</th>
+              </tr>
+            </thead>
+            <tbody id="securityTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div id="command-center" style="display:none">
+      <div class="section-title mb-4">Command Center for Audience Analysis</div>
+      <div class="section-sub">Modulo avanzado para leer el origen de las audiencias, su nivel de conocimiento y la transicion estrategica entre external e internal a lo largo del funnel premium.</div>
+
+      <div class="command-center-intro">
+        <div class="command-summary-card">
+          <div class="command-summary-title">Lectura ejecutiva del origen de audiencias</div>
+          <div class="command-summary-text" id="commandSummaryText">-</div>
+        </div>
+        <div class="command-signal-grid">
+          <div class="command-signal">
+            <div class="command-signal-label">Dominio External</div>
+            <div class="command-signal-value" id="commandExternalShare">-</div>
+            <div class="command-signal-desc">Peso agregado de audiencias todavia fuera del CRM premium.</div>
+          </div>
+          <div class="command-signal">
+            <div class="command-signal-label">Dominio Internal</div>
+            <div class="command-signal-value" id="commandInternalShare">-</div>
+            <div class="command-signal-desc">Audiencias ya identificadas o activadas desde canales propios.</div>
+          </div>
+          <div class="command-signal">
+            <div class="command-signal-label">Filas Validadas</div>
+            <div class="command-signal-value" id="commandValidatedRows">-</div>
+            <div class="command-signal-desc">Etapas cuya mezcla porcentual completa o roza el 100% esperado.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-accent"></div>
+        <div class="card-title mb-4">Audience Origin Matrix by Funnel Stage</div>
+        <div class="card-subtitle">Los porcentajes descienden y migran en diagonal desde unknown external hacia known internal para explicar como madura el conocimiento de la audiencia.</div>
+        <div class="command-table-wrap">
+          <table class="command-table">
+            <thead>
+              <tr>
+                <th rowspan="2">Funnel Stage</th>
+                <th colspan="2">External</th>
+                <th colspan="2">Internal</th>
+                <th rowspan="2">Total (%)</th>
+                <th rowspan="2">Detalle</th>
+              </tr>
+              <tr>
+                <th>Unknown External</th>
+                <th>Known External</th>
+                <th>Unknown Internal</th>
+                <th>Known Internal</th>
+              </tr>
+            </thead>
+            <tbody id="commandCenterTableBody"></tbody>
+          </table>
+        </div>
+        <div class="command-validation-banner" id="commandValidationBanner"></div>
+      </div>
+    </div>
+
+    <div id="portafolio" style="display:none">
+      <div class="section-title mb-4">Media Portfolio</div>
+      <div class="section-sub">Herramienta de media planning para audiencias de lujo - ROI esperado, saturacion y recomendaciones automaticas por ciudad</div>
+
+      <div class="kpi-grid mb-18">
+        <div class="kpi-card"><div class="kpi-label">Total Budget Q2</div><div class="kpi-value">$1.8B</div><div class="text-sm text-muted mt-4">COP asignado</div></div>
+        <div class="kpi-card"><div class="kpi-label">Expected ROI</div><div class="kpi-value text-gold" id="roiVal">22%</div><div class="text-sm text-green mt-4">▲ vs benchmark 16%</div></div>
+        <div class="kpi-card"><div class="kpi-label">Luxury Engagement</div><div class="kpi-value" id="engProj">7.8</div><div class="text-sm text-muted mt-4">/10 indice compuesto</div></div>
+        <div class="kpi-card"><div class="kpi-label">Risk Level</div><div class="kpi-value playfair" id="riskVal" style="font-size:18px;">Medio</div><div class="text-sm text-muted mt-4">Across portfolio</div></div>
+      </div>
+
+      <div class="grid-2 mb-18">
+        <div class="card">
+          <div class="card-accent"></div>
+          <div class="card-title mb-16">Investment Allocation by City</div>
+          <div class="slider-group"><label>Bogota <span id="vB">45</span>%</label><input type="range" id="invB" value="45" oninput="updatePortfolio()"></div>
+          <div class="slider-group"><label>Medellin <span id="vM">30</span>%</label><input type="range" id="invM" value="30" oninput="updatePortfolio()"></div>
+          <div class="slider-group"><label>Cali <span id="vC">25</span>%</label><input type="range" id="invC" value="25" oninput="updatePortfolio()"></div>
+          <div class="flex-between mt-16" style="padding-top:14px;border-top:1px solid var(--border);">
+            <span class="text-sm text-muted">Total asignado:</span>
+            <span class="playfair fw-700" style="font-size:18px;" id="totalInv">100%</span>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-accent"></div>
+          <div class="card-title mb-16">City Luxury Performance Matrix</div>
+          <table class="data-table">
+            <thead><tr><th>Ciudad</th><th>Inversion</th><th>ROI Est.</th><th>Saturacion</th><th>Engagement</th><th>Riesgo</th></tr></thead>
+            <tbody>
+              <tr><td><span class="city-dot" style="background:var(--navy);"></span><strong>Bogota</strong></td><td id="tB">45%</td><td id="roiB" class="text-green fw-700">26%</td><td><span class="score-badge score-med">Media</span></td><td id="eB">8.6</td><td id="rB"><span class="status-ind s-warning"><span class="status-dot"></span>Medio</span></td></tr>
+              <tr><td><span class="city-dot" style="background:var(--gold);"></span><strong>Medellin</strong></td><td id="tM">30%</td><td id="roiM" class="text-green fw-700">20%</td><td><span class="score-badge score-high">Baja</span></td><td id="eM">7.9</td><td id="rM"><span class="status-ind s-active"><span class="status-dot"></span>Bajo</span></td></tr>
+              <tr><td><span class="city-dot" style="background:var(--amber);"></span><strong>Cali</strong></td><td id="tC">25%</td><td id="roiC" class="fw-700" style="color:var(--amber);">15%</td><td><span class="score-badge score-low">Alta</span></td><td id="eC">7.1</td><td id="rC"><span class="status-ind s-alert"><span class="status-dot"></span>Alto</span></td></tr>
+            </tbody>
+          </table>
+          <div class="alert-banner navy mt-16">◆ <span>Medellin muestra la mejor oportunidad de expansion luxury: baja saturacion y segmento premium en crecimiento.</span></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-accent"></div>
+        <div class="card-title mb-12">Luxury Fashion Market Index - Benchmark Sectorial Colombia</div>
+        <div style="height:200px;"><canvas id="portfolioChart"></canvas></div>
+      </div>
+    </div>
+
+    <div id="tablero" style="display:none">
+      <div class="section-title mb-4">Performance Monitor</div>
+      <div class="section-sub">Monitoreo estrategico de inversion publicitaria premium por canal</div>
+
+      <div class="grid-4 mb-18">
+        <div class="kpi-card"><div class="kpi-label">Total Ad Spend</div><div class="kpi-value">$940M</div><span class="kpi-delta neutral">vs $1.8B budget</span></div>
+        <div class="kpi-card"><div class="kpi-label">Canales Activos</div><div class="kpi-value">4</div><span class="kpi-delta up">Meta, Google, Pinterest, OOH</span></div>
+        <div class="kpi-card"><div class="kpi-label">Alertas Activas</div><div class="kpi-value text-red">3</div><span class="kpi-delta down">2 criticas y 1 warning</span></div>
+        <div class="kpi-card"><div class="kpi-label">Overall ROAS</div><div class="kpi-value">5.6x</div><span class="kpi-delta up">▲ sobre target</span></div>
+      </div>
+
+      <div class="card mb-18">
+        <div class="card-accent"></div>
+        <div class="card-title mb-16">Channel Investment Tracker - Luxury Media Mix</div>
+        <table class="data-table">
+          <thead><tr><th>Plataforma</th><th>Budget</th><th>Spend</th><th>Ejecucion</th><th>Daily</th><th>ROAS</th><th>Estado</th><th>Alerta</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>Meta Ads</strong><br><span class="text-xs text-muted">Instagram Luxury + FB</span></td>
+              <td>$400M</td>
+              <td class="fw-700">$520M <span style="color:var(--red);font-size:11px;">+30%</span></td>
+              <td><div class="tracker-bar"><div class="tracker-fill" style="width:100%;background:var(--red);"></div></div></td>
+              <td>$18.5M</td>
+              <td class="text-green fw-700">6.8x</td>
+              <td><span class="status-ind s-alert"><span class="status-dot"></span>Overspend</span></td>
+              <td><span style="font-size:11px;background:var(--red-pale);color:var(--red);padding:3px 8px;border-radius:6px;font-weight:700;">Revision urgente</span></td>
+            </tr>
+            <tr>
+              <td><strong>Google Ads</strong><br><span class="text-xs text-muted">Search Premium + Display</span></td>
+              <td>$280M</td>
+              <td class="fw-700">$310M <span style="color:var(--amber);font-size:11px;">+11%</span></td>
+              <td><div class="tracker-bar"><div class="tracker-fill" style="width:95%;background:var(--gold);"></div></div></td>
+              <td>$11M</td>
+              <td class="fw-700" style="color:var(--amber);">4.2x</td>
+              <td><span class="status-ind s-warning"><span class="status-dot"></span>Warning</span></td>
+              <td><span style="font-size:11px;background:var(--amber-pale);color:var(--amber);padding:3px 8px;border-radius:6px;font-weight:700;">Ajustar limites</span></td>
+            </tr>
+            <tr>
+              <td><strong>Pinterest Ads</strong><br><span class="text-xs text-muted">Luxury Fashion + Inspiration</span></td>
+              <td>$160M</td>
+              <td class="fw-700">$82M <span style="color:var(--green);font-size:11px;">51%</span></td>
+              <td><div class="tracker-bar"><div class="tracker-fill" style="width:51%;background:var(--green);"></div></div></td>
+              <td>$2.9M</td>
+              <td class="text-green fw-700">7.2x</td>
+              <td><span class="status-ind s-active"><span class="status-dot"></span>Normal</span></td>
+              <td><span style="font-size:11px;background:var(--green-pale);color:var(--green);padding:3px 8px;border-radius:6px;font-weight:700;">Escalar budget</span></td>
+            </tr>
+            <tr>
+              <td><strong>Out-of-Home Premium</strong><br><span class="text-xs text-muted">Bogota + Medellin - Zonas Premium</span></td>
+              <td>$960M</td>
+              <td class="fw-700">$28M <span style="color:var(--red);font-size:11px;">Anomalia</span></td>
+              <td><div class="tracker-bar"><div class="tracker-fill" style="width:3%;background:var(--red);"></div></div></td>
+              <td>$1M</td>
+              <td class="fw-700 text-muted">N/A</td>
+              <td><span class="status-ind s-alert"><span class="status-dot"></span>Critico</span></td>
+              <td><span style="font-size:11px;background:var(--red-pale);color:var(--red);padding:3px 8px;border-radius:6px;font-weight:700;">Error de datos</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-accent"></div>
+          <div class="card-title mb-12">ROAS por Canal - Luxury Benchmark</div>
+          <div style="height:220px;"><canvas id="tableroChart"></canvas></div>
+        </div>
+        <div class="card">
+          <div class="card-accent"></div>
+          <div class="card-title mb-12">Alertas Inteligentes del Sistema</div>
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <div class="alert-banner">🚨 <div><strong>Meta Ads - Overspend Detectado:</strong> Inversion supero budget en $120M COP.</div></div>
+            <div class="alert-banner">🚨 <div><strong>Out-of-Home Premium - Anomalia:</strong> Ejecucion del 3% del budget asignado.</div></div>
+            <div class="alert-banner gold">⚠️ <div><strong>Google Ads - Budget Warning:</strong> Spend supera budget en 11%.</div></div>
+            <div class="alert-banner green">✅ <div><strong>Pinterest Ads - Oportunidad:</strong> ROAS de 7.2x con solo 51% del budget ejecutado.</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <script>
+let historyChartInstance;
+let homeChartInstance;
+let segmentDonutChart;
+let audienceEngagementChart;
+let loyaltyTrendChart;
+let securityScatterChart;
+let securityCityChart;
+let globalUsers = [];
 
-function show(id){
-document.querySelectorAll(".content > div").forEach(s=>s.style.display="none")
-document.getElementById(id).style.display="block"
+const HEADERS = {
+  home: "Luxury Audience Intelligence Overview",
+  insights: "Luxury Consumer Insights - Psicografia y Comportamiento",
+  audiencias: "Audience Catalog - Segmentos Premium y Simulacion",
+  security: "Security Overview - 150 Audiencias",
+  "command-center": "Command Center for Audience Analysis",
+  funnel: "Conversion Funnel - Luxury Consumer Journey",
+  portafolio: "Media Portfolio - Planificacion Premium por Ciudad",
+  tablero: "Performance Monitor - Inversion y Alertas Estrategicas"
+};
+
+const NAVY = "#0d1b2e";
+const GOLD = "#b8922a";
+const GOLD_L = "#d4a843";
+const NAVY_M = "#1a2e4a";
+const AMB = "#b05c10";
+const GREEN = "#1a6e4a";
+const RED = "#9e1b2e";
+const SEGMENT_COLOR_MAP = {
+  "Mujer Ejecutiva": NAVY,
+  "Hombre Premium": GOLD,
+  "Aspiracional": NAVY_M,
+  "Regalo Premium": AMB,
+  "Mujer Sofisticada 50+": "#6b8aac"
+};
+
+const SEGMENTS_MH = [
+  "Mujer Ejecutiva Premium",
+  "Hombre Clasico Tradicional",
+  "Consumidora Aspiracional",
+  "Comprador de Regalo",
+  "Hombre Business Casual",
+  "Mujer Sofisticada 50+",
+  "Consumidor Joven Aspiracional"
+];
+
+const SEGMENT_GROUPS = {
+  "Mujer Ejecutiva Premium": "Mujer Ejecutiva",
+  "Hombre Clasico Tradicional": "Hombre Premium",
+  "Hombre Business Casual": "Hombre Premium",
+  "Consumidora Aspiracional": "Aspiracional",
+  "Consumidor Joven Aspiracional": "Aspiracional",
+  "Comprador de Regalo": "Regalo Premium",
+  "Mujer Sofisticada 50+": "Mujer Sofisticada 50+"
+};
+
+const SEGMENT_META = {
+  "Mujer Ejecutiva Premium": { engagementBase: 84, ticketBase: 1380, scoreBase: 8.7, growth: 6 },
+  "Hombre Clasico Tradicional": { engagementBase: 78, ticketBase: 1280, scoreBase: 8.5, growth: 4 },
+  "Consumidora Aspiracional": { engagementBase: 69, ticketBase: 780, scoreBase: 7.2, growth: 7 },
+  "Comprador de Regalo": { engagementBase: 73, ticketBase: 1490, scoreBase: 7.9, growth: 5 },
+  "Hombre Business Casual": { engagementBase: 75, ticketBase: 1120, scoreBase: 8.1, growth: 4 },
+  "Mujer Sofisticada 50+": { engagementBase: 82, ticketBase: 1580, scoreBase: 8.8, growth: 3 },
+  "Consumidor Joven Aspiracional": { engagementBase: 67, ticketBase: 690, scoreBase: 7.0, growth: 8 }
+};
+
+const NOMBRES_F = ["Valentina Restrepo", "Camila Londono", "Isabella Montoya", "Sofia Arias", "Laura Castillo", "Daniela Ospina", "Natalia Velez", "Gabriela Escobar", "Manuela Torres", "Juliana Perez", "Claudia Herrera", "Patricia Gomez", "Andrea Salcedo", "Monica Diaz", "Carolina Ramos"];
+const NOMBRES_M = ["Andres Restrepo", "Carlos Montoya", "Felipe Arias", "Santiago Londono", "Mauricio Castillo", "Juan Pablo Ospina", "Diego Velez", "Roberto Escobar", "Luis Fernando Torres", "Alejandro Perez", "Sergio Herrera", "Ricardo Gomez", "Esteban Salcedo", "Nicolas Diaz", "Camilo Ramos"];
+const OCUPACIONES_F = ["Directora Ejecutiva", "Gerente de Marketing", "Arquitecta Senior", "Consultora de Imagen", "Abogada Corporativa", "Medica Especialista", "Empresaria", "Directora Creativa"];
+const OCUPACIONES_M = ["CEO / Empresario", "Gerente Financiero", "Arquitecto", "Abogado Corporativo", "Director Comercial", "Medico Especialista", "Ingeniero Senior", "Director de Operaciones"];
+const CATEGORIAS = ["Bolsos y Carteras", "Zapatos de Cuero", "Accesorios Premium", "Marroquineria Hombre", "Cinturones y Correas", "Prendas Hombre", "Bolsos de Noche", "Calzado Femenino"];
+const CANALES_MH = ["Boutique Exclusiva", "E-commerce Premium", "Boutique + Online", "Tienda Departamental"];
+const MOMENTOS = ["Autoregalo Premium", "Regalo Ocasion Especial", "Consumo Aspiracional", "Regalo Corporativo", "Aniversario / Boda", "Cumpleanos VIP"];
+const LOYAL_MONTHS = ["Nov 2025", "Dic 2025", "Ene 2026", "Feb 2026", "Mar 2026", "Abr 2026"];
+const FUNNEL_STAGE_VOLUMES = {
+  population: 50000000,
+  potential: 1000000,
+  awareness: 800000,
+  interest: 400000,
+  intention: 240000,
+  action: 24000,
+  engagement: 18000,
+  loyalty: 1800
+};
+const COMMAND_CENTER_PHASES = [
+  { key: "potential", label: "Potential Market", note: "Volumen premium posible antes de identificarlo o capturarlo.", stageWeight: 1, threshold: () => true },
+  { key: "awareness", label: "Awareness", note: "Audiencias expuestas a marca, PR y social premium.", stageWeight: 0.86, threshold: (u) => u.engagement >= 58 },
+  { key: "interest", label: "Interest", note: "Interaccion activa con storytelling, producto o categoria.", stageWeight: 0.72, threshold: (u) => u.engagement >= 66 },
+  { key: "intention", label: "Intention", note: "Audiencias con senal clara de consideracion o recompra cercana.", stageWeight: 0.55, threshold: (u) => u.engagement >= 72 && u.dias <= 35 },
+  { key: "action", label: "Action", note: "Compra, reserva, transaccion o cierre de alta probabilidad.", stageWeight: 0.34, threshold: (u) => u.dias <= 28 && parseFloat(u.score) >= 7.4 },
+  { key: "engagement", label: "Engagement", note: "Base activa que responde a CRM, boutique y contenidos propios.", stageWeight: 0.22, threshold: (u) => u.loyaltyType !== "En Riesgo" },
+  { key: "loyalty", label: "Loyalty", note: "Clientes recurrentes de alto valor y relacion estable con la marca.", stageWeight: 0.12, threshold: (u) => u.isLoyal }
+];
+
+const CITY_POOL = [
+  { name: "Bogota", color: NAVY, cluster: "Zona T / Andino", engagementLift: 4 },
+  { name: "Medellin", color: GOLD, cluster: "El Tesoro / Provenza", engagementLift: 3 },
+  { name: "Cali", color: AMB, cluster: "Chipichape / Granada", engagementLift: 0 },
+  { name: "Barranquilla", color: "#8c5d3b", cluster: "Buenavista", engagementLift: 1 },
+  { name: "Bucaramanga", color: "#4d7c86", cluster: "Cabecera", engagementLift: -1 },
+  { name: "Cartagena", color: "#b56d5d", cluster: "Bocagrande", engagementLift: 2 },
+  { name: "Pereira", color: "#6b8aac", cluster: "Circunvalar", engagementLift: -2 }
+];
+
+const audienceConfig = {
+  mujer_exec: { reach: 28000, avg: 8.1, label: "Mujer Ejecutiva Premium" },
+  hombre_clasico: { reach: 18500, avg: 7.4, label: "Hombre Clasico Tradicional" },
+  aspiracional: { reach: 32000, avg: 6.5, label: "Consumidor Aspiracional" },
+  regalo: { reach: 21000, avg: 7.8, label: "Comprador de Regalo Premium" }
+};
+
+const insightData = {
+  all: { ticket: "$890K", product: "Bolsos y Carteras", churn: "2.1%", peak: "2.4x/año", radar: [82, 70, 88, 85, 55], channels: [74, 20, 6], catGender: [[60, 40, 35, 20, 15, 10], [10, 40, 55, 70, 80, 60]], ocasiones: [38, 28, 18, 10, 6] },
+  mujer_exec: { ticket: "$1.24M", product: "Bolsos Ejecutivos", churn: "1.4%", peak: "3.1x/año", radar: [90, 65, 92, 78, 40], channels: [80, 14, 6], catGender: [[85, 30, 20, 5, 8, 5], [0, 0, 0, 0, 0, 0]], ocasiones: [30, 35, 22, 8, 5] },
+  hombre_clasico: { ticket: "$1.08M", product: "Marroquineria Hombre", churn: "0.9%", peak: "1.8x/año", radar: [78, 45, 95, 98, 30], channels: [92, 5, 3], catGender: [[0, 0, 0, 0, 0, 0], [15, 60, 75, 90, 88, 70]], ocasiones: [20, 15, 12, 40, 13] },
+  aspiracional: { ticket: "$540K", product: "Accesorios Premium", churn: "4.2%", peak: "1.6x/año", radar: [60, 85, 70, 60, 90], channels: [55, 38, 7], catGender: [[70, 60, 55, 30, 20, 15], [10, 30, 40, 60, 65, 45]], ocasiones: [55, 20, 15, 6, 4] },
+  regalo: { ticket: "$1.56M", product: "Bolsos de Noche", churn: "3.8%", peak: "2.2x/año", radar: [72, 60, 80, 75, 65], channels: [68, 24, 8], catGender: [[65, 50, 45, 30, 25, 20], [35, 50, 55, 70, 75, 80]], ocasiones: [42, 32, 5, 14, 7] }
+};
+
+const psychoM = {
+  "Mujer Ejecutiva Premium": {
+    c: "Calidad artesanal como extension de su identidad profesional y exito personal.",
+    m: "Autorealizacion. El accesorio correcto valida liderazgo y sofisticacion.",
+    n: "Estima. Busca reconocimiento social a traves de objetos de valor duradero.",
+    e: "La textura del cuero colombiano y la boutique privada elevan la experiencia.",
+    cuando: "Compra en lanzamientos de temporada, cierres de trimestre y momentos de autorecompensa.",
+    donde: "Prefiere Bogota y Medellin, investiga online y cierra en boutique para validar calidad tactil.",
+    porque: "Quiere piezas que proyecten exito en entornos corporativos y sociales.",
+    rec: "Activar previews privados y CRM con piezas editoriales segun ciudad y momento de compra."
+  },
+  "Hombre Clasico Tradicional": {
+    c: "La tradicion artesanal colombiana como simbolo de legado y permanencia.",
+    m: "Lealtad a una marca que comunica calidad atemporal.",
+    n: "Pertenencia a una elite que valora lo autentico por encima de lo efimero.",
+    e: "La experiencia boutique y el asesor experto son parte del producto.",
+    cuando: "Compra 1 o 2 veces al ano, con mas fuerza en noviembre, diciembre y fechas especiales.",
+    donde: "Convierte sobre todo en boutique fisica de Bogota, Medellin y Cali.",
+    porque: "Busca durabilidad, sobriedad y confianza en el origen del producto.",
+    rec: "Storytelling artesanal, personalizacion con iniciales y programa de cuidado del cuero."
+  },
+  "Consumidora Aspiracional": {
+    c: "El lujo como recompensa personal y senal de crecimiento profesional.",
+    m: "Su primera compra premium es un hito de vida.",
+    n: "Autoestima y validacion social por acceso a una marca iconica.",
+    e: "Las redes sociales sostienen el deseo durante meses antes de la conversion.",
+    cuando: "Compra en ascensos, logros personales y temporadas de alto impulso emocional.",
+    donde: "Descubre en redes, compara online y cierra online o en boutique segun facilidades de pago.",
+    porque: "Busca una pieza visible, iconica y fotografiable sin sacrificar calidad.",
+    rec: "Retargeting con storytelling de origen, bundles de entrada y facilidades de pago."
+  },
+  "Comprador de Regalo": {
+    c: "El regalo premium como prueba visible de afecto, respeto o gratitud.",
+    m: "Quiere impresionar y resolver bien una ocasion importante.",
+    n: "Conexion emocional a traves de una compra impecable.",
+    e: "Necesita asesoria, rapidez y empaque memorable.",
+    cuando: "Se activa con fuerza en Dia de la Madre, diciembre, aniversarios y regalos corporativos.",
+    donde: "Busca online y convierte donde haya mejor acompanamiento del asesor.",
+    porque: "La marca habla por el comprador cuando la ocasion exige un gesto de alto valor.",
+    rec: "Gift advisor, guias por ciudad y empaque premium con urgencia de temporada."
+  },
+  "Hombre Business Casual": {
+    c: "Funcionalidad con elegancia discreta para la vida ejecutiva.",
+    m: "Completar una imagen profesional consistente.",
+    n: "Seguridad personal en reuniones, viajes y espacios de negocio.",
+    e: "Valora rapidez, servicio y combinaciones inteligentes.",
+    cuando: "Compra ante necesidades concretas, viajes o renovacion de accesorios de oficina.",
+    donde: "Investiga online y compra en boutique u online dependiendo del ticket.",
+    porque: "Busca durabilidad, servicio postventa y piezas faciles de integrar a su rutina.",
+    rec: "Bundles ejecutivos y activaciones de mantenimiento anual para sostener fidelidad."
+  },
+  "Mujer Sofisticada 50+": {
+    c: "Piezas que cuentan una historia y pueden heredarse.",
+    m: "Legado, trascendencia y gusto maduro.",
+    n: "Construir permanencia a traves de objetos que no pasan de moda.",
+    e: "La relacion con el asesor y el ambiente de la boutique son determinantes.",
+    cuando: "Compra con planificacion, muy pocas veces por impulso y con tickets altos.",
+    donde: "Mayor concentracion en Bogota, Cartagena y Medellin con conversion boutique.",
+    porque: "Exige trazabilidad, servicio y continuidad de la marca a largo plazo.",
+    rec: "Asesor dedicado, eventos privados y servicio de restauracion para piezas antiguas."
+  },
+  "Consumidor Joven Aspiracional": {
+    c: "El lujo como declaracion de identidad y pertenencia generacional.",
+    m: "La marca que usa define como quiere ser percibido.",
+    n: "Acceder a una elite de estilo con una pieza de entrada memorable.",
+    e: "Influencers, reels y contenido behind the scenes alimentan el deseo.",
+    cuando: "Planifica la compra durante meses y la vincula a logros muy concretos.",
+    donde: "Descubre en social, compara a detalle y convierte si hay confianza y facilidades.",
+    porque: "Busca una primera pieza premium con peso simbolico y visual.",
+    rec: "Micro-influencers, contenidos de proceso artesanal y beneficios para first-time buyers."
+  }
+};
+
+const SEGMENT_TOUCHPOINTS = {
+  "Mujer Ejecutiva Premium": {
+    discovery: "LinkedIn, Instagram curado, CRM premium y eventos privados de boutique.",
+    channels: "Boutique Exclusiva, CRM editorial, lookbook directo y social premium."
+  },
+  "Hombre Clasico Tradicional": {
+    discovery: "OOH premium, recomendacion de asesor, prensa editorial y relacion boutique.",
+    channels: "Boutique Exclusiva, carta editorial, llamada del asesor y eventos privados."
+  },
+  "Consumidora Aspiracional": {
+    discovery: "Instagram, Pinterest, reels de producto, influencers y retargeting digital.",
+    channels: "E-commerce Premium, Boutique + Online, social ads y CRM de seguimiento."
+  },
+  "Comprador de Regalo": {
+    discovery: "Google, WhatsApp asesorado, campañas de temporada y recomendaciones en tienda.",
+    channels: "Google Search, gift advisor, boutique asistida y CRM estacional."
+  },
+  "Hombre Business Casual": {
+    discovery: "Search, contenido utilitario, recomendacion ejecutiva y CRM de reposicion.",
+    channels: "Boutique + Online, Search Premium y contacto de asesor."
+  },
+  "Mujer Sofisticada 50+": {
+    discovery: "Relacion boutique, eventos privados, newsletter editorial y voz a voz premium.",
+    channels: "Boutique Exclusiva, asesor dedicado, invitaciones privadas y CRM relacional."
+  },
+  "Consumidor Joven Aspiracional": {
+    discovery: "Instagram, TikTok visual, micro-influencers, contenido behind the scenes y social discovery.",
+    channels: "Social premium, E-commerce Premium, remarketing y first-purchase journeys."
+  }
+};
+
+Chart.defaults.font.family = "'DM Sans', sans-serif";
+Chart.defaults.color = "#8a9aaa";
+
+function show(id, btn) {
+  document.querySelectorAll(".content > div").forEach((d) => {
+    d.style.display = "none";
+  });
+  document.getElementById(id).style.display = "block";
+  document.querySelectorAll(".nav-btn").forEach((b) => b.classList.remove("active"));
+  if (btn) btn.classList.add("active");
+  document.getElementById("headerTitle").textContent = HEADERS[id] || id;
+  if (window.location.hash !== `#${id}`) {
+    history.replaceState(null, "", `#${id}`);
+  }
 }
 
-// HOME
-new Chart(document.getElementById("overviewChart"),{
-type:"line",
-data:{labels:["S1","S2","S3","S4","S5","S6"],
-datasets:[{data:[7,7.2,6.8,6.4,6,5.6],borderColor:"#9e1b2f"}]}
-})
-
-// INSIGHTS
-new Chart(document.getElementById("territory"),{
-type:"bar",
-data:{labels:["Bogotá","Medellín","Cali","Barranquilla","Otros"],
-datasets:[{data:[50,35,25,20,20],backgroundColor:"#9e1b2f"}]}
-})
-
-new Chart(document.getElementById("cups"),{
-type:"doughnut",
-data:{labels:["1","2","3","4+"],datasets:[{data:[40,60,30,20]}]}
-})
-
-new Chart(document.getElementById("frequency"),{
-type:"bar",
-data:{labels:["1-2","3-5","6-8","9+"],
-datasets:[{data:[70,40,25,15],backgroundColor:"#9e1b2f"}]}
-})
-
-new Chart(document.getElementById("motives"),{
-type:"pie",
-data:{labels:["Calidad","Ambiente","Trabajo","Productos","Marca"],
-datasets:[{data:[40,30,25,30,25]}]}
-})
-
-new Chart(document.getElementById("products"),{
-type:"bar",
-data:{labels:["Cumbre","Nevado","Latte","Cappuccino","Cold Brew","Pastelería"],
-datasets:[{data:[40,35,50,45,30,25],backgroundColor:"#9e1b2f"}]}
-})
-
-// AUDIENCIAS
-const semanas=["Semana1","Semana2","Semana3","Semana4","Semana5","Semana6"]
-let uxData=[6,6.5,7,6.8,7.2,7]
-let freqData=[5,5.2,5.5,5.8,6,6.2]
-let timeData=[6,6.3,6.5,6.7,7,7.1]
-
-const behaviorChart=new Chart(document.getElementById("behaviorChart"),{
-type:"line",
-data:{
-labels:semanas,
-datasets:[
-{label:"UX",data:uxData,borderColor:"#9e1b2f"},
-{label:"Frecuencia",data:freqData,borderColor:"#c6374a"},
-{label:"Tiempo",data:timeData,borderColor:"#6d4c41"},
-{label:"Alerta",data:[6,6,6,6,6,6],borderColor:"red",borderDash:[5,5]}
-]},
-options:{scales:{y:{min:1,max:10}}}
-})
-
-function actualizarIndice(){
-let uxVal=Number(ux.value)
-let freqVal=Number(freq.value)
-let timeVal=Number(time.value)
-
-indice.innerText=((uxVal+freqVal+timeVal)/3).toFixed(1)
-
-uxData[5]=uxVal
-freqData[5]=freqVal
-timeData[5]=timeVal
-
-behaviorChart.update()
+function showFromHash() {
+  const id = (window.location.hash || "#home").replace("#", "");
+  const target = document.getElementById(id) ? id : "home";
+  const btn = document.querySelector(`.nav-btn[onclick*="'${target}'"]`);
+  show(target, btn);
 }
 
-document.querySelectorAll("input").forEach(e=>e.addEventListener("input",actualizarIndice))
-
-// PORTAFOLIO KPIs
-function actualizarPortafolio(){
-
-let b = Number(invBogota.value)
-let m = Number(invMedellin.value)
-let c = Number(invCali.value)
-
-let total = b + m + c
-
-totalInv.innerText = total
-
-b_inv.innerText = b + "%"
-m_inv.innerText = m + "%"
-c_inv.innerText = c + "%"
-
-let eng = ((b*8.2)+(m*7.5)+(c*6.8))/total
-engagementTotal.innerText = eng.toFixed(1)
-
-let riesgoScore = ((b*2)+(m*1)+(c*3))/total
-
-let riesgoTxt = "Medio"
-if(riesgoScore < 1.8) riesgoTxt = "Bajo"
-else if(riesgoScore > 2.3) riesgoTxt = "Alto"
-
-riesgoTotal.innerText = riesgoTxt
-
-let roiCalc = (eng * 2.2) - riesgoScore
-roi.innerText = roiCalc.toFixed(1) + "%"
-
-let max = Math.max(b,m,c)
-if(max === b) canal.innerText = "Bogotá"
-else if(max === m) canal.innerText = "Medellín"
-else canal.innerText = "Cali"
-
-actualizarGraficaPortafolio(b,m,c)
+function showCatalogSection(sectionId, btn) {
+  document.getElementById("simulador-section").style.display = "none";
+  document.getElementById("biblioteca-section").style.display = "none";
+  document.getElementById(sectionId + "-section").style.display = "block";
+  document.querySelectorAll(".tab-btn").forEach((b) => b.classList.remove("active"));
+  btn.classList.add("active");
+  if (sectionId === "biblioteca") {
+    renderUsers();
+    populateLibraryStats();
+  }
 }
 
-document.querySelectorAll("#portafolio input").forEach(e=>{
-e.addEventListener("input", actualizarPortafolio)
-})
-
-// GRÁFICA PORTAFOLIO
-let portfolioChart = new Chart(document.getElementById("portfolioChart"), {
-type: "scatter",
-data: {
-datasets: [
-{
-label: "Audiencias",
-data: [
-{x:2, y:18},
-{x:1, y:15},
-{x:3, y:12}
-],
-backgroundColor: "#9e1b2f"
-},
-{
-label: "Frontera Eficiente",
-type: "line",
-data: [
-{x:1, y:15},
-{x:2, y:18},
-{x:3, y:20}
-],
-borderColor: "#c6374a",
-fill: false,
-tension: 0.4
-}
-]
-},
-options: {
-scales: {
-x: {title:{display:true,text:"Riesgo"},min:0,max:4},
-y: {title:{display:true,text:"Retorno (%)"},min:0,max:25}
-}
-}
-})
-
-function actualizarGraficaPortafolio(b,m,c){
-let total = b + m + c
-
-let riesgoTotalCalc = ((b*2)+(m*1)+(c*3))/total
-let retornoTotalCalc = ((b*18)+(m*15)+(c*12))/total
-
-portfolioChart.data.datasets[1].data = [
-{x:1, y:15},
-{x:riesgoTotalCalc, y:retornoTotalCalc},
-{x:3, y:20}
-]
-
-portfolioChart.update()
+function seeded(index, salt) {
+  const value = Math.sin(index * 12.9898 + salt * 78.233) * 43758.5453;
+  return value - Math.floor(value);
 }
 
+function clamp(value, min, max) {
+  return Math.min(max, Math.max(min, value));
+}
+
+function formatVolume(value) {
+  return Number(value || 0).toLocaleString("en-US");
+}
+
+function pick(arr, index, salt) {
+  return arr[Math.floor(seeded(index, salt) * arr.length) % arr.length];
+}
+
+function getGenero(segmento, index) {
+  if (segmento.includes("Mujer") || segmento.includes("Consumidora")) return "Mujer";
+  if (segmento.includes("Hombre")) return "Hombre";
+  return seeded(index, 3) > 0.48 ? "Mujer" : "Hombre";
+}
+
+function buildUsers() {
+  if (globalUsers.length) return;
+  for (let i = 1; i <= 150; i++) {
+    const segmento = SEGMENTS_MH[(i - 1) % SEGMENTS_MH.length];
+    const genero = getGenero(segmento, i);
+    const city = pick(CITY_POOL, i, 11);
+    const meta = SEGMENT_META[segmento];
+    const nombreArr = genero === "Mujer" ? NOMBRES_F : NOMBRES_M;
+    const ocupArr = genero === "Mujer" ? OCUPACIONES_F : OCUPACIONES_M;
+    const baseEngagement = meta.engagementBase + city.engagementLift + Math.round((seeded(i, 7) - 0.5) * 14);
+    const engagement = clamp(baseEngagement, 46, 97);
+    const score = clamp((meta.scoreBase + (seeded(i, 8) - 0.5) * 1.1), 5.8, 9.8);
+    const ticket = Math.round(meta.ticketBase + (seeded(i, 9) - 0.5) * 520);
+    const dias = Math.max(2, Math.round(42 - (engagement - 55) * 0.65 + seeded(i, 12) * 10));
+    const categoria = pick(CATEGORIAS, i, 13);
+    const momento = pick(MOMENTOS, i, 14);
+    const canal = engagement > 80 ? "Boutique Exclusiva" : pick(CANALES_MH, i, 15);
+    const valor = score >= 8.6 ? "Platinum" : score >= 7.4 ? "Gold" : "Silver";
+    const loyaltyType = engagement >= 82 && dias <= 24 && valor !== "Silver" ? "Leal" : engagement >= 66 ? "Activa" : "En Riesgo";
+    const isLoyal = loyaltyType === "Leal";
+    const trendLift = meta.growth + city.engagementLift * 0.6 + (isLoyal ? 2 : -1);
+    const consentScore = clamp(Math.round(70 + (seeded(i, 40) - 0.5) * 26 + (canal === "Boutique Exclusiva" ? 8 : canal === "Boutique + Online" ? 4 : -3) + (isLoyal ? 4 : -2)), 48, 96);
+    const fraudRisk = clamp(Math.round(34 + (seeded(i, 41) - 0.5) * 28 + (engagement < 60 ? 10 : -3) + (segmento.includes("Aspiracional") ? 8 : 0) + (city.name === "Cartagena" ? 5 : 0)), 14, 84);
+    const brandSafetyScore = clamp(Math.round(73 + (seeded(i, 42) - 0.5) * 18 + (valor === "Platinum" ? 4 : 0) + (segmento.includes("Regalo") ? 3 : 0)), 55, 96);
+    const privacyScore = clamp(Math.round(69 + (seeded(i, 43) - 0.5) * 20 + (canal === "E-commerce Premium" ? -6 : 4) + (city.engagementLift > 1 ? 2 : 0)), 52, 95);
+    const securityScore = clamp(Math.round(consentScore * 0.28 + privacyScore * 0.26 + brandSafetyScore * 0.24 + (100 - fraudRisk) * 0.22), 50, 95);
+    const securityTier = securityScore >= 80 ? "Secure" : securityScore >= 68 ? "Watch" : "Critical";
+    const engagementSeries = LOYAL_MONTHS.map((_, idx) => {
+      const progress = idx / (LOYAL_MONTHS.length - 1);
+      const raw = engagement - trendLift + (trendLift * progress) + (seeded(i, 30 + idx) - 0.5) * 4;
+      return clamp(Math.round(raw), 42, 99);
+    });
+
+    globalUsers.push({
+      id: `MH-${2000 + i}`,
+      nombre: pick(nombreArr, i, 21),
+      segmento,
+      genero,
+      edad: genero === "Mujer" ? 28 + (i % 24) : 31 + (i % 22),
+      ocupacion: pick(ocupArr, i, 22),
+      score: score.toFixed(1),
+      ticket,
+      dias,
+      valor,
+      categoria,
+      momento,
+      canal,
+      city: city.name,
+      cluster: city.cluster,
+      cityColor: city.color,
+      engagement,
+      engagementBand: engagement >= 80 ? "Alto" : engagement >= 65 ? "Medio" : "Bajo",
+      loyaltyType,
+      isLoyal,
+      engagementSeries,
+      consentScore,
+      fraudRisk,
+      brandSafetyScore,
+      privacyScore,
+      securityScore,
+      securityTier
+    });
+  }
+}
+
+function countBy(list, key) {
+  return list.reduce((acc, item) => {
+    const val = typeof key === "function" ? key(item) : item[key];
+    acc[val] = (acc[val] || 0) + 1;
+    return acc;
+  }, {});
+}
+
+function getModeValue(list, key) {
+  const counts = countBy(list, key);
+  const top = Object.entries(counts).sort((a, b) => b[1] - a[1])[0];
+  return top ? { label: top[0], value: top[1] } : { label: "-", value: 0 };
+}
+
+function getTopEntries(list, key, limit = 3) {
+  return Object.entries(countBy(list, key))
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, limit);
+}
+
+function formatTopMix(entries, total) {
+  return entries.map(([label, value]) => `${label} ${Math.round((value / total) * 100)}%`).join(", ");
+}
+
+function buildStageAudienceStatus(users) {
+  const avgEngagement = users.reduce((sum, u) => sum + u.engagement, 0) / users.length;
+  const loyalShare = Math.round((users.filter((u) => u.isLoyal).length / users.length) * 100);
+  const riskShare = Math.round((users.filter((u) => u.loyaltyType === "En Riesgo").length / users.length) * 100);
+  if (avgEngagement >= 80) {
+    return `Audiencia muy calida, con ${loyalShare}% de base leal y respuesta alta a activaciones premium.`;
+  }
+  if (avgEngagement >= 68) {
+    return `Audiencia en desarrollo, con buen nivel de respuesta pero todavia sensible a frecuencia, relevancia y acompanamiento.`;
+  }
+  return `Audiencia amplia y mas fria, con ${riskShare}% en zona de riesgo o baja trazabilidad; necesita construccion de afinidad antes del cierre.`;
+}
+
+function buildStageTouchpointText(users, field) {
+  const segmentEntries = getTopEntries(users, "segmento", 2);
+  const unique = [];
+  segmentEntries.forEach(([segment]) => {
+    const source = SEGMENT_TOUCHPOINTS[segment];
+    if (source && source[field] && !unique.includes(source[field])) unique.push(source[field]);
+  });
+  return unique.join(" ") || "Se activa por mezcla de boutique, CRM premium y social discovery.";
+}
+
+function buildStageWhenText(users) {
+  const moments = getTopEntries(users, "momento", 3);
+  const topSegments = getTopEntries(users, "segmento", 2);
+  const momentText = formatTopMix(moments, users.length);
+  const behaviorText = topSegments
+    .map(([segment]) => psychoM[segment]?.cuando)
+    .filter(Boolean)
+    .slice(0, 1)
+    .join(" ");
+  return `${momentText}. ${behaviorText}`;
+}
+
+function buildStageWhereText(users) {
+  const cityMix = formatTopMix(getTopEntries(users, "city", 2), users.length);
+  const channelMix = formatTopMix(getTopEntries(users, "canal", 2), users.length);
+  const topSegments = getTopEntries(users, "segmento", 2);
+  const whereBehavior = topSegments
+    .map(([segment]) => psychoM[segment]?.donde)
+    .filter(Boolean)
+    .slice(0, 1)
+    .join(" ");
+  return `Ciudades clave: ${cityMix}. Canales dominantes: ${channelMix}. ${whereBehavior}`;
+}
+
+function getOverviewStats() {
+  const loyalUsers = globalUsers.filter((u) => u.isLoyal);
+  const avgEngagement = globalUsers.reduce((sum, u) => sum + u.engagement, 0) / globalUsers.length;
+  const highEngagement = globalUsers.filter((u) => u.engagement >= 80).length;
+  const mediumEngagement = globalUsers.filter((u) => u.engagement >= 65 && u.engagement < 80).length;
+  const lowEngagement = globalUsers.length - highEngagement - mediumEngagement;
+  const cityCounts = countBy(globalUsers, "city");
+  const topCity = Object.entries(cityCounts).sort((a, b) => b[1] - a[1])[0];
+  const loyalAvg = loyalUsers.reduce((sum, u) => sum + u.engagement, 0) / loyalUsers.length;
+  const loyalTicket = loyalUsers.reduce((sum, u) => sum + u.ticket, 0) / loyalUsers.length;
+  const loyalRecency = loyalUsers.reduce((sum, u) => sum + u.dias, 0) / loyalUsers.length;
+  const loyalChannel = getModeValue(loyalUsers, "canal");
+  const loyalCategory = getModeValue(loyalUsers, "categoria");
+  const loyalCityCounts = countBy(loyalUsers, "city");
+  const loyalTrend = LOYAL_MONTHS.map((_, idx) => {
+    const total = loyalUsers.reduce((sum, user) => sum + user.engagementSeries[idx], 0);
+    return Math.round(total / loyalUsers.length);
+  });
+  const overallTrend = LOYAL_MONTHS.map((_, idx) => {
+    const total = globalUsers.reduce((sum, user) => sum + user.engagementSeries[idx], 0);
+    return Math.round(total / globalUsers.length);
+  });
+  const groupedSegments = countBy(globalUsers, (u) => SEGMENT_GROUPS[u.segmento] || u.segmento);
+
+  return {
+    audienceCount: globalUsers.length,
+    cityCount: Object.keys(cityCounts).length,
+    avgEngagement,
+    highEngagement,
+    mediumEngagement,
+    lowEngagement,
+    loyalCount: loyalUsers.length,
+    loyalShare: loyalUsers.length / globalUsers.length,
+    topCity: topCity ? topCity[0] : "-",
+    topCityCount: topCity ? topCity[1] : 0,
+    loyalAvg,
+    loyalTicket,
+    loyalRecency,
+    loyalChannel: loyalChannel.label,
+    loyalCategory: loyalCategory.label,
+    loyalTrend,
+    overallTrend,
+    groupedSegments,
+    loyalCityCounts
+  };
+}
+
+function getSecurityStats() {
+  const secure = globalUsers.filter((u) => u.securityTier === "Secure");
+  const watch = globalUsers.filter((u) => u.securityTier === "Watch");
+  const critical = globalUsers.filter((u) => u.securityTier === "Critical");
+  const avgScore = globalUsers.reduce((sum, u) => sum + u.securityScore, 0) / globalUsers.length;
+  const avgConsent = globalUsers.reduce((sum, u) => sum + u.consentScore, 0) / globalUsers.length;
+  const avgFraud = globalUsers.reduce((sum, u) => sum + u.fraudRisk, 0) / globalUsers.length;
+  const safeEngaged = globalUsers.filter((u) => u.engagement >= 80 && u.securityScore >= 80).length;
+  const riskyEngaged = globalUsers.filter((u) => u.engagement >= 80 && u.securityScore < 68).length;
+
+  const cityAverages = CITY_POOL
+    .map((city) => {
+      const users = globalUsers.filter((u) => u.city === city.name);
+      const avg = users.length ? users.reduce((sum, u) => sum + u.securityScore, 0) / users.length : 0;
+      return { city: city.name, color: city.color, avg: Number(avg.toFixed(1)) };
+    })
+    .sort((a, b) => b.avg - a.avg);
+
+  const channelAverages = CANALES_MH
+    .map((channel) => {
+      const users = globalUsers.filter((u) => u.canal === channel);
+      if (!users.length) return { channel, avg: 0 };
+      const avg = users.reduce((sum, u) => sum + u.securityScore, 0) / users.length;
+      return { channel, avg };
+    })
+    .sort((a, b) => b.avg - a.avg);
+
+  return {
+    secureCount: secure.length,
+    watchCount: watch.length,
+    criticalCount: critical.length,
+    avgScore,
+    avgConsent,
+    avgFraud,
+    safeEngaged,
+    riskyEngaged,
+    cityAverages,
+    topCity: cityAverages[0],
+    bottomCity: cityAverages[cityAverages.length - 1],
+    topChannel: channelAverages[0]
+  };
+}
+
+function normalizeShares(shares) {
+  return shares.map((value) => clamp(value, 2, 88));
+}
+
+function getCommandCenterData() {
+  const groupedCounts = countBy(globalUsers, (u) => SEGMENT_GROUPS[u.segmento] || u.segmento);
+  const topSegment = Object.entries(groupedCounts).sort((a, b) => b[1] - a[1])[0];
+
+  const rows = COMMAND_CENTER_PHASES.map((phase, index) => {
+    const users = globalUsers.filter((u) => phase.threshold(u));
+    const avgEngagement = users.reduce((sum, u) => sum + u.engagement, 0) / users.length;
+    const avgDias = users.reduce((sum, u) => sum + u.dias, 0) / users.length;
+    const avgTicket = users.reduce((sum, u) => sum + u.ticket, 0) / users.length;
+    const boutiqueShare = (users.filter((u) => u.canal.includes("Boutique")).length / users.length) * 100;
+    const loyalShare = (users.filter((u) => u.isLoyal).length / users.length) * 100;
+    const digitalShare = (users.filter((u) => u.canal.includes("E-commerce") || u.canal.includes("Online")).length / users.length) * 100;
+    const aspirationalShare = (users.filter((u) => (SEGMENT_GROUPS[u.segmento] || u.segmento) === "Aspiracional").length / users.length) * 100;
+    const giftShare = (users.filter((u) => (SEGMENT_GROUPS[u.segmento] || u.segmento) === "Regalo Premium").length / users.length) * 100;
+    const consentAvg = users.reduce((sum, u) => sum + u.consentScore, 0) / users.length;
+    const progress = index / (COMMAND_CENTER_PHASES.length - 1);
+
+    const template = [
+      58 - (progress * 54),
+      24 - (progress * 12),
+      12 + (progress * 10),
+      6 + (progress * 56)
+    ];
+
+    let unknownExternal = template[0] + ((100 - avgEngagement) * 0.08) + (aspirationalShare * 0.04) - (loyalShare * 0.05);
+    let knownExternal = template[1] + (digitalShare * 0.03) + (giftShare * 0.04) - (consentAvg * 0.03) + 2;
+    let unknownInternal = template[2] + (boutiqueShare * 0.04) + (phase.stageWeight * 8) - (loyalShare * 0.03);
+    let knownInternal = template[3] + (loyalShare * 0.13) + (consentAvg * 0.04) + (boutiqueShare * 0.04) - (avgDias * 0.10);
+
+    [unknownExternal, knownExternal, unknownInternal, knownInternal] = normalizeShares([
+      unknownExternal,
+      knownExternal,
+      unknownInternal,
+      knownInternal
+    ]).map((value) => Math.round(value));
+
+    if (!(unknownExternal >= knownExternal && knownExternal >= unknownInternal)) {
+      knownExternal = Math.min(knownExternal, unknownExternal - 1);
+      unknownInternal = Math.min(unknownInternal, knownExternal - 1);
+    }
+
+    if (index >= 4 && knownInternal <= unknownInternal) {
+      knownInternal = unknownInternal + 6;
+    }
+
+    const total = unknownExternal + knownExternal + unknownInternal + knownInternal;
+    const stageVolume = FUNNEL_STAGE_VOLUMES[phase.key] || 0;
+    const absoluteShares = {
+      unknownExternal: Math.round((stageVolume * unknownExternal) / 100),
+      knownExternal: Math.round((stageVolume * knownExternal) / 100),
+      unknownInternal: Math.round((stageVolume * unknownInternal) / 100),
+      knownInternal: Math.round((stageVolume * knownInternal) / 100)
+    };
+    const stageSegments = Object.entries(countBy(users, (u) => SEGMENT_GROUPS[u.segmento] || u.segmento))
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 3)
+      .map(([label, value]) => `${label} ${Math.round((value / users.length) * 100)}%`);
+    const exactSegments = getTopEntries(users, "segmento", 3);
+    const topCategory = getModeValue(users, "categoria").label;
+    const topChannel = getModeValue(users, "canal").label;
+    const topCity = getModeValue(users, "city").label;
+    const favoriteChannels = formatTopMix(getTopEntries(users, "canal", 3), users.length);
+
+    let insight = "";
+    if (phase.key === "potential") {
+      insight = `La masa premium aun depende de external unknown. ${topSegment ? topSegment[0] : "El segmento lider"} sostiene la entrada y conviene convertir awareness en conocimiento trazable antes de empujar conversion.`;
+    } else if (phase.key === "awareness") {
+      insight = `Awareness ya reconoce mas marca, pero la mezcla sigue abierta. Conviene reforzar storytelling en ${topCity} con contacto social y CRM liviano para mover volumen hacia known external.`;
+    } else if (phase.key === "interest") {
+      insight = `El interes ya deja senales claras en ${topChannel}. La oportunidad esta en capturar first-party data y visitas asistidas para pasar de externo conocido a internal.`;
+    } else if (phase.key === "intention") {
+      insight = `La intencion combina audiencias tibias del CRM con externos de alto valor. Recomendado: reserva en boutique, seguimiento por asesor y mensajes de urgencia suave.`;
+    } else if (phase.key === "action") {
+      insight = `Action ya depende de conocimiento interno. El cierre mejora cuando el asesor, el stock y el contenido editorial trabajan juntos sobre las categorias ${topCategory}.`;
+    } else if (phase.key === "engagement") {
+      insight = `En engagement domina el ecosistema interno. El foco debe ser sostener frecuencia, elevar consentimiento y proteger valor en ciudades como ${topCity}.`;
+    } else {
+      insight = `Loyalty ya es conocido e interno. Esta base merece trato VIP, acceso anticipado y comunicaciones de alta curaduria para maximizar LTV y referidos.`;
+    }
+
+    return {
+      index: index + 1,
+      key: phase.key,
+      label: phase.label,
+      note: phase.note,
+      stageVolume,
+      users,
+      shares: {
+        unknownExternal,
+        knownExternal,
+        unknownInternal,
+        knownInternal
+      },
+      absoluteShares,
+      total,
+      valid: Math.abs(total - 100) <= 1,
+      near: Math.abs(total - 100) <= 2,
+      detail: {
+        audiences: stageSegments,
+        audienceType: formatTopMix(exactSegments, users.length),
+        audienceStatus: buildStageAudienceStatus(users),
+        habits: `Ticket promedio $${Math.round(avgTicket).toLocaleString()}K COP, ultima compra media ${Math.round(avgDias)} dias y categoria dominante ${topCategory}.`,
+        whenBuy: buildStageWhenText(users),
+        whereBuy: buildStageWhereText(users),
+        discovery: buildStageTouchpointText(users, "discovery"),
+        favoriteChannels: favoriteChannels,
+        contact: `Canal principal ${topChannel}. Boutique representa ${Math.round(boutiqueShare)}% y digital/online ${Math.round(digitalShare)}% del contacto en esta fase.`,
+        insight,
+        city: topCity,
+        avgEngagement: avgEngagement.toFixed(1)
+      }
+    };
+  });
+
+  const totals = rows.reduce((acc, row) => {
+    acc.external += row.shares.unknownExternal + row.shares.knownExternal;
+    acc.internal += row.shares.unknownInternal + row.shares.knownInternal;
+    acc.validRows += row.near ? 1 : 0;
+    return acc;
+  }, { external: 0, internal: 0, validRows: 0 });
+
+  return {
+    rows,
+    avgExternal: Math.round(totals.external / rows.length),
+    avgInternal: Math.round(totals.internal / rows.length),
+    validRows: totals.validRows
+  };
+}
+
+function renderCommandCenter(commandData) {
+  document.getElementById("commandExternalShare").textContent = `${commandData.avgExternal}%`;
+  document.getElementById("commandInternalShare").textContent = `${commandData.avgInternal}%`;
+  document.getElementById("commandValidatedRows").textContent = `${commandData.validRows}/7`;
+
+  const summaryRows = commandData.rows;
+  const early = summaryRows.slice(0, 3).reduce((sum, row) => sum + row.shares.unknownExternal, 0) / 3;
+  const late = summaryRows.slice(-3).reduce((sum, row) => sum + row.shares.knownInternal, 0) / 3;
+  document.getElementById("commandSummaryText").textContent = `El funnel premium parte de Population ${formatVolume(FUNNEL_STAGE_VOLUMES.population)} y filtra hasta Potential Market ${formatVolume(FUNNEL_STAGE_VOLUMES.potential)}. Desde ahi, la concentracion arranca alta en audiencias externas poco conocidas (${Math.round(early)}% promedio en las primeras etapas) y se desplaza hacia base propia conocida (${Math.round(late)}% promedio de known internal en Engagement y Loyalty).`;
+
+  const tbody = document.getElementById("commandCenterTableBody");
+  tbody.innerHTML = "";
+  commandData.rows.forEach((row, idx) => {
+    const totalClass = row.valid ? "ok" : row.near ? "near" : "warn";
+    const totalLabel = row.valid ? "OK" : row.near ? "Near" : "Alert";
+    const detailId = `command-detail-${idx}`;
+    const toggleId = `command-toggle-${idx}`;
+    const rowEl = document.createElement("tr");
+    rowEl.className = "command-main-row";
+    rowEl.innerHTML = `
+      <td class="command-stage-cell">
+        <div class="command-stage-name"><span class="command-stage-index">${row.index}</span>${row.label} <span class="command-stage-count">${formatVolume(row.stageVolume)}</span></div>
+        <div class="command-stage-note">${row.note}</div>
+      </td>
+      <td class="command-value-cell">
+        <div class="command-cell-top"><span class="command-cell-label">Unknown</span><span class="command-cell-val">${row.shares.unknownExternal}%</span></div>
+        <div class="command-meter"><div class="command-meter-fill" style="width:${row.shares.unknownExternal}%;background:${NAVY};"></div></div>
+        <div class="command-cell-abs">${formatVolume(row.absoluteShares.unknownExternal)} audiencias</div>
+      </td>
+      <td class="command-value-cell">
+        <div class="command-cell-top"><span class="command-cell-label">Known</span><span class="command-cell-val">${row.shares.knownExternal}%</span></div>
+        <div class="command-meter"><div class="command-meter-fill" style="width:${row.shares.knownExternal}%;background:${GOLD};"></div></div>
+        <div class="command-cell-abs">${formatVolume(row.absoluteShares.knownExternal)} audiencias</div>
+      </td>
+      <td class="command-value-cell">
+        <div class="command-cell-top"><span class="command-cell-label">Unknown</span><span class="command-cell-val">${row.shares.unknownInternal}%</span></div>
+        <div class="command-meter"><div class="command-meter-fill" style="width:${row.shares.unknownInternal}%;background:${NAVY_M};"></div></div>
+        <div class="command-cell-abs">${formatVolume(row.absoluteShares.unknownInternal)} audiencias</div>
+      </td>
+      <td class="command-value-cell">
+        <div class="command-cell-top"><span class="command-cell-label">Known</span><span class="command-cell-val">${row.shares.knownInternal}%</span></div>
+        <div class="command-meter"><div class="command-meter-fill" style="width:${row.shares.knownInternal}%;background:${GREEN};"></div></div>
+        <div class="command-cell-abs">${formatVolume(row.absoluteShares.knownInternal)} audiencias</div>
+      </td>
+      <td>
+        <div class="command-total ${totalClass}">${row.total}% ${totalLabel}</div>
+        <div class="command-total-sub">${formatVolume(row.stageVolume)} base de etapa</div>
+      </td>
+      <td>
+        <button id="${toggleId}" class="command-toggle" type="button" aria-expanded="false" onclick="toggleCommandStage(${idx})">⌄</button>
+      </td>`;
+    tbody.appendChild(rowEl);
+
+    const detailRow = document.createElement("tr");
+    detailRow.className = "command-detail-row";
+    detailRow.innerHTML = `
+      <td colspan="7">
+        <div id="${detailId}" class="command-detail-box">
+          <div class="command-detail-inner">
+            <div class="command-detail-grid">
+              <div class="command-detail-card">
+                <div class="command-detail-label">Quienes son</div>
+                <div class="command-tag-list">
+                  ${row.detail.audiences.map((item) => `<span class="command-chip">${item}</span>`).join("")}
+                </div>
+              </div>
+              <div class="command-detail-card">
+                <div class="command-detail-label">Tipo de audiencia</div>
+                <div class="command-detail-text">${row.detail.audienceType}</div>
+              </div>
+              <div class="command-detail-card">
+                <div class="command-detail-label">Como estan como audiencia</div>
+                <div class="command-detail-text">${row.detail.audienceStatus}</div>
+              </div>
+              <div class="command-detail-card">
+                <div class="command-detail-label">Habitos de consumo</div>
+                <div class="command-detail-text">${row.detail.habits}</div>
+              </div>
+              <div class="command-detail-card">
+                <div class="command-detail-label">Cuando compran</div>
+                <div class="command-detail-text">${row.detail.whenBuy}</div>
+              </div>
+              <div class="command-detail-card">
+                <div class="command-detail-label">Donde compran</div>
+                <div class="command-detail-text">${row.detail.whereBuy}</div>
+              </div>
+              <div class="command-detail-card">
+                <div class="command-detail-label">Por donde se enteran</div>
+                <div class="command-detail-text">${row.detail.discovery}</div>
+              </div>
+              <div class="command-detail-card">
+                <div class="command-detail-label">Canales favoritos</div>
+                <div class="command-detail-text">${row.detail.favoriteChannels}</div>
+              </div>
+              <div class="command-detail-card">
+                <div class="command-detail-label">Como los contactamos</div>
+                <div class="command-detail-text">${row.detail.contact}</div>
+              </div>
+              <div class="command-detail-card">
+                <div class="command-detail-label">Insight estrategico automatico</div>
+                <div class="command-detail-text">${row.detail.insight}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </td>`;
+    tbody.appendChild(detailRow);
+  });
+
+  const invalidRows = commandData.rows.filter((row) => !row.near);
+  const banner = document.getElementById("commandValidationBanner");
+  if (!invalidRows.length) {
+    banner.innerHTML = `<div class="alert-banner green">✅ <div><strong>Validacion consistente:</strong> las 7 etapas suman el 100% esperado o quedan dentro del rango de tolerancia por redondeo.</div></div>`;
+  } else {
+    banner.innerHTML = `<div class="alert-banner">⚠️ <div><strong>Revisar distribucion:</strong> ${invalidRows.map((row) => row.label).join(", ")} se sale del rango esperado y conviene recalibrar pesos.</div></div>`;
+  }
+}
+
+function toggleCommandStage(index) {
+  const box = document.getElementById(`command-detail-${index}`);
+  const btn = document.getElementById(`command-toggle-${index}`);
+  if (!box || !btn) return;
+  const willOpen = !box.classList.contains("open");
+  if (willOpen) {
+    box.classList.add("open");
+    btn.classList.add("open");
+    btn.setAttribute("aria-expanded", "true");
+  } else {
+    box.classList.remove("open");
+    btn.classList.remove("open");
+    btn.setAttribute("aria-expanded", "false");
+  }
+}
+
+function populateOverviewMetrics(stats) {
+  document.getElementById("overviewAudienceCount").textContent = stats.audienceCount;
+  document.getElementById("overviewCityCount").textContent = `${stats.cityCount} ciudades activas`;
+  document.getElementById("overviewAvgEngagement").textContent = `${stats.avgEngagement.toFixed(1)} / 100`;
+  document.getElementById("overviewEngagementDelta").textContent = `${stats.highEngagement} audiencias en alto`;
+  document.getElementById("overviewLoyalAudiences").textContent = stats.loyalCount;
+  document.getElementById("overviewLoyalDelta").textContent = `${(stats.loyalShare * 100).toFixed(0)}% del catalogo`;
+  document.getElementById("overviewHighEngagementShare").textContent = `${((stats.highEngagement / stats.audienceCount) * 100).toFixed(0)}%`;
+  document.getElementById("overviewTopLoyalChannel").textContent = stats.loyalChannel;
+  document.getElementById("overviewTopCity").textContent = stats.topCity;
+  document.getElementById("loyalAvgTicket").textContent = `$${Math.round(stats.loyalTicket).toLocaleString()}K COP`;
+  document.getElementById("loyalRecency").textContent = `${Math.round(stats.loyalRecency)} dias`;
+  document.getElementById("loyalTopCategory").textContent = stats.loyalCategory;
+  document.getElementById("loyalPreferredChannel").textContent = stats.loyalChannel;
+  document.getElementById("sidebarAudienceCount").textContent = `${stats.audienceCount} audiencias base del analisis`;
+
+  const cityWrap = document.getElementById("loyalCityShare");
+  cityWrap.innerHTML = "";
+  const loyalTotal = Object.values(stats.loyalCityCounts).reduce((sum, value) => sum + value, 0);
+  Object.entries(stats.loyalCityCounts)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 4)
+    .forEach(([city, count]) => {
+      const cfg = CITY_POOL.find((item) => item.name === city);
+      const pct = loyalTotal ? Math.round((count / loyalTotal) * 100) : 0;
+      cityWrap.innerHTML += `
+        <div class="city-share-row">
+          <div class="city-share-label">${city}</div>
+          <div class="city-share-bar"><div class="city-share-fill" style="width:${pct}%;background:${cfg ? cfg.color : NAVY};"></div></div>
+          <div class="city-share-val">${pct}%</div>
+        </div>`;
+    });
+}
+
+function renderSegmentExplainer(groupedSegments) {
+  const ordered = Object.entries(groupedSegments).sort((a, b) => b[1] - a[1]);
+  const total = ordered.reduce((sum, [, value]) => sum + value, 0);
+  const topLabel = ordered[0] ? ordered[0][0] : "-";
+  const topPct = ordered[0] ? Math.round((ordered[0][1] / total) * 100) : 0;
+  const secondLabel = ordered[1] ? ordered[1][0] : "-";
+  const secondPct = ordered[1] ? Math.round((ordered[1][1] / total) * 100) : 0;
+
+  document.getElementById("segmentSummary").textContent = `La mezcla premium se concentra principalmente en ${topLabel} (${topPct}%) y ${secondLabel} (${secondPct}%). Esta lectura parte de la base original y agrupa perfiles parecidos para evitar duplicar lecturas entre audiencias de hombre y aspiracionales.`;
+
+  const wrap = document.getElementById("segmentHighlights");
+  wrap.innerHTML = "";
+  ordered.forEach(([label, value]) => {
+    const pct = Math.round((value / total) * 100);
+    const color = SEGMENT_COLOR_MAP[label] || NAVY;
+    wrap.innerHTML += `
+      <span class="segment-highlight">
+        <span class="segment-highlight-swatch" style="background:${color};"></span>
+        ${label} ${pct}%
+      </span>`;
+  });
+}
+
+function initHomeCharts(stats) {
+  homeChartInstance = new Chart(document.getElementById("homeChart"), {
+    type: "line",
+    data: {
+      labels: LOYAL_MONTHS,
+      datasets: [{
+        label: "Enganche total",
+        data: stats.overallTrend,
+        borderColor: GOLD,
+        tension: 0.4,
+        fill: true,
+        backgroundColor: "rgba(184,146,42,0.08)",
+        pointBackgroundColor: GOLD,
+        pointRadius: 4
+      }]
+    },
+    options: {
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        y: { min: 40, max: 100, grid: { color: "#f0ece6" } },
+        x: { grid: { display: false } }
+      }
+    }
+  });
+
+  const segmentLabels = Object.keys(stats.groupedSegments);
+  const segmentValues = segmentLabels.map((label) => stats.groupedSegments[label]);
+  segmentDonutChart = new Chart(document.getElementById("segmentDonut"), {
+    type: "doughnut",
+    data: {
+      labels: segmentLabels,
+      datasets: [{
+        data: segmentValues,
+        backgroundColor: segmentLabels.map((label) => SEGMENT_COLOR_MAP[label] || NAVY),
+        borderWidth: 0,
+        hoverOffset: 10
+      }]
+    },
+    options: {
+      maintainAspectRatio: false,
+      cutout: "65%",
+      plugins: { legend: { display: false } }
+    }
+  });
+  renderSegmentExplainer(stats.groupedSegments);
+
+  audienceEngagementChart = new Chart(document.getElementById("audienceEngagementChart"), {
+    type: "bar",
+    data: {
+      labels: ["Alto", "Medio", "Bajo"],
+      datasets: [{
+        label: "Audiencias",
+        data: [stats.highEngagement, stats.mediumEngagement, stats.lowEngagement],
+        backgroundColor: [GREEN, GOLD, RED],
+        borderRadius: 8,
+        maxBarThickness: 42
+      }]
+    },
+    options: {
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        y: { grid: { color: "#f0ece6" }, ticks: { precision: 0 } },
+        x: { grid: { display: false } }
+      }
+    }
+  });
+
+  loyaltyTrendChart = new Chart(document.getElementById("loyaltyTrendChart"), {
+    type: "line",
+    data: {
+      labels: LOYAL_MONTHS,
+      datasets: [
+        {
+          label: "Audiencias leales",
+          data: stats.loyalTrend,
+          borderColor: NAVY,
+          backgroundColor: "rgba(13,27,46,0.05)",
+          pointBackgroundColor: NAVY,
+          pointRadius: 4,
+          tension: 0.35,
+          fill: true
+        },
+        {
+          label: "Promedio catalogo",
+          data: stats.overallTrend,
+          borderColor: GOLD,
+          borderDash: [5, 5],
+          pointRadius: 0,
+          fill: false,
+          tension: 0.35
+        }
+      ]
+    },
+    options: {
+      maintainAspectRatio: false,
+      plugins: { legend: { labels: { font: { size: 11 } } } },
+      scales: {
+        y: { min: 40, max: 100, grid: { color: "#f0ece6" } },
+        x: { grid: { display: false } }
+      }
+    }
+  });
+}
+
+function populateSecurityOverview(stats) {
+  document.getElementById("securitySecureCount").textContent = stats.secureCount;
+  document.getElementById("securityWatchCount").textContent = stats.watchCount;
+  document.getElementById("securityCriticalCount").textContent = stats.criticalCount;
+  document.getElementById("securityAvgScore").textContent = stats.avgScore.toFixed(1);
+  document.getElementById("securityAvgDelta").textContent = `${stats.safeEngaged} audiencias seguras con alto enganche`;
+  document.getElementById("securitySafeEngaged").textContent = `${stats.safeEngaged} audiencias`;
+  document.getElementById("securityRiskyEngaged").textContent = `${stats.riskyEngaged} audiencias`;
+  document.getElementById("securityConsentAvg").textContent = `${stats.avgConsent.toFixed(1)} / 100`;
+  document.getElementById("securityFraudAvg").textContent = `${stats.avgFraud.toFixed(1)} / 100`;
+  document.getElementById("securityTopCity").textContent = `${stats.topCity.city} (${stats.topCity.avg})`;
+  document.getElementById("securityBottomCity").textContent = `${stats.bottomCity.city} (${stats.bottomCity.avg})`;
+  document.getElementById("securityTopChannel").textContent = stats.topChannel.channel;
+
+  const narrative = stats.riskyEngaged > 0
+    ? `${stats.riskyEngaged} audiencias exigen control reforzado`
+    : "Enganche alto con seguridad estable";
+  document.getElementById("securityNarrative").textContent = narrative;
+}
+
+function initSecurityCharts(stats) {
+  const scatterPoints = {
+    Secure: globalUsers.filter((u) => u.securityTier === "Secure").map((u) => ({ x: u.engagement, y: u.securityScore })),
+    Watch: globalUsers.filter((u) => u.securityTier === "Watch").map((u) => ({ x: u.engagement, y: u.securityScore })),
+    Critical: globalUsers.filter((u) => u.securityTier === "Critical").map((u) => ({ x: u.engagement, y: u.securityScore }))
+  };
+
+  securityScatterChart = new Chart(document.getElementById("securityScatterChart"), {
+    type: "scatter",
+    data: {
+      datasets: [
+        { label: "Secure", data: scatterPoints.Secure, backgroundColor: "rgba(26,110,74,0.55)", pointRadius: 6 },
+        { label: "Watch", data: scatterPoints.Watch, backgroundColor: "rgba(184,146,42,0.60)", pointRadius: 6 },
+        { label: "Critical", data: scatterPoints.Critical, backgroundColor: "rgba(158,27,46,0.55)", pointRadius: 6 }
+      ]
+    },
+    options: {
+      maintainAspectRatio: false,
+      plugins: { legend: { labels: { font: { size: 11 } } } },
+      scales: {
+        x: { min: 40, max: 100, title: { display: true, text: "Engagement" }, grid: { color: "#f0ece6" } },
+        y: { min: 50, max: 100, title: { display: true, text: "Security Score" }, grid: { color: "#f0ece6" } }
+      }
+    }
+  });
+
+  const orderedCities = [...stats.cityAverages].sort((a, b) => b.avg - a.avg);
+  securityCityChart = new Chart(document.getElementById("securityCityChart"), {
+    type: "bar",
+    data: {
+      labels: orderedCities.map((item) => item.city),
+      datasets: [{
+        label: "Security promedio",
+        data: orderedCities.map((item) => item.avg),
+        backgroundColor: orderedCities.map((item) => item.color),
+        borderRadius: 8
+      }]
+    },
+    options: {
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        y: { min: 50, max: 100, grid: { color: "#f0ece6" } },
+        x: { grid: { display: false } }
+      }
+    }
+  });
+}
+
+function populateCityFilter() {
+  const select = document.getElementById("filterCity");
+  const cities = [...new Set(globalUsers.map((u) => u.city))].sort();
+  select.innerHTML = '<option value="">Todas las ciudades</option>';
+  cities.forEach((city) => {
+    select.innerHTML += `<option value="${city}">${city}</option>`;
+  });
+}
+
+function populateLibraryStats() {
+  const stats = getOverviewStats();
+  document.getElementById("libraryTotalAudiences").textContent = stats.audienceCount;
+  document.getElementById("libraryLoyalAudiences").textContent = stats.loyalCount;
+  document.getElementById("libraryCities").textContent = stats.cityCount;
+  document.getElementById("libraryAvgEngagement").textContent = `${stats.avgEngagement.toFixed(1)}`;
+}
+
+function renderSecurityTable() {
+  const tbody = document.getElementById("securityTableBody");
+  if (tbody.children.length > 0) return;
+  globalUsers.forEach((user) => {
+    const bandClass = user.securityTier === "Secure" ? "security-secure" : user.securityTier === "Watch" ? "security-watch" : "security-critical";
+    const engagementClass = user.engagement >= 80 ? "engagement-high" : user.engagement >= 65 ? "engagement-mid" : "engagement-low";
+    const fraudClass = user.fraudRisk >= 55 ? "score-low" : user.fraudRisk >= 35 ? "score-med" : "score-high";
+    const scoreClass = user.securityScore >= 80 ? "score-high" : user.securityScore >= 68 ? "score-med" : "score-low";
+    const recommendation = user.securityTier === "Critical" ? "Control" : user.securityTier === "Watch" ? "Monitorear" : "Escalar";
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td><strong>#${user.id}</strong></td>
+      <td>
+        <div style="font-size:12px;font-weight:700;color:var(--navy);">${user.segmento}</div>
+        <div class="text-xs text-muted">${user.nombre}</div>
+      </td>
+      <td><span class="city-pill"><span class="city-dot" style="background:${user.cityColor};"></span>${user.city}</span></td>
+      <td><span class="engagement-pill ${engagementClass}">${user.engagement}/100</span></td>
+      <td><span class="score-badge ${scoreClass}">${user.securityScore}</span></td>
+      <td><span class="security-band ${bandClass}">${user.securityTier}</span></td>
+      <td>${user.consentScore}</td>
+      <td><span class="score-badge ${fraudClass}">${user.fraudRisk}</span></td>
+      <td>${user.brandSafetyScore}</td>
+      <td>${user.privacyScore}</td>
+      <td><button class="action-btn" onclick="openProfileModal('${user.id}')">${recommendation}</button></td>`;
+    tbody.appendChild(row);
+  });
+}
+
+function renderUsers() {
+  const tbody = document.getElementById("userTableBody");
+  if (tbody.children.length > 0) return;
+  globalUsers.forEach((user) => {
+    const valClass = user.valor === "Platinum" ? "val-platinum" : user.valor === "Gold" ? "val-gold" : "val-silver";
+    const scoreClass = parseFloat(user.score) > 8 ? "score-high" : parseFloat(user.score) > 6.5 ? "score-med" : "score-low";
+    const genClass = user.genero === "Mujer" ? "gender-f" : "gender-m";
+    const engagementClass = user.engagement >= 80 ? "engagement-high" : user.engagement >= 65 ? "engagement-mid" : "engagement-low";
+    const statusClass = user.loyaltyType === "Leal" ? "s-active" : user.loyaltyType === "Activa" ? "s-warning" : "s-alert";
+    const row = document.createElement("tr");
+    row.setAttribute("data-genero", user.genero);
+    row.setAttribute("data-city", user.city);
+    row.setAttribute("data-text", `${user.id} ${user.segmento} ${user.categoria} ${user.genero} ${user.nombre} ${user.city}`.toUpperCase());
+    row.innerHTML = `
+      <td><strong>#${user.id}</strong></td>
+      <td>
+        <div style="font-size:12px;font-weight:700;color:var(--navy);">${user.segmento}</div>
+        <div class="text-xs text-muted">${user.nombre}</div>
+      </td>
+      <td><span class="city-pill"><span class="city-dot" style="background:${user.cityColor};"></span>${user.city}</span></td>
+      <td><span class="gender-badge ${genClass}">${user.genero}</span></td>
+      <td style="font-size:12px;">${user.categoria}</td>
+      <td><span class="engagement-pill ${engagementClass}">${user.engagement}/100</span></td>
+      <td><span class="value-pill ${valClass}">${user.valor}</span></td>
+      <td><span class="status-ind ${statusClass}"><span class="status-dot"></span>${user.loyaltyType}</span></td>
+      <td class="text-muted">Hace ${user.dias}d</td>
+      <td class="fw-600">$${user.ticket.toLocaleString()}K</td>
+      <td><span class="score-badge ${scoreClass}">${user.score}</span></td>
+      <td><button class="action-btn" onclick="openProfileModal('${user.id}')">Ver Perfil</button></td>`;
+    tbody.appendChild(row);
+  });
+}
+
+function openProfileModal(userId) {
+  const user = globalUsers.find((u) => u.id === userId);
+  if (!user) return;
+  document.getElementById("modalName").textContent = user.nombre;
+  document.getElementById("modalId").textContent = `ID: #${user.id} | ${user.genero} | ${user.edad} años`;
+  document.getElementById("mAge").textContent = `${user.edad} años`;
+  document.getElementById("mOcup").textContent = user.ocupacion;
+  document.getElementById("mTicket").textContent = `$${user.ticket.toLocaleString()}K COP`;
+  document.getElementById("mScore").textContent = `${user.score} / 10`;
+  document.getElementById("mCity").textContent = user.city;
+  document.getElementById("mCluster").textContent = user.cluster;
+  document.getElementById("mCanal").textContent = user.canal;
+  document.getElementById("mVisita").textContent = `Hace ${user.dias} dias`;
+  document.getElementById("mCategoria").textContent = user.categoria;
+  document.getElementById("mMomento").textContent = user.momento;
+
+  const tags = document.getElementById("modalTags");
+  const valClass = user.valor === "Platinum" ? "val-platinum" : user.valor === "Gold" ? "val-gold" : "val-silver";
+  const genClass = user.genero === "Mujer" ? "gender-f" : "gender-m";
+  tags.innerHTML = `
+    <span class="modal-tag" style="background:rgba(255,255,255,0.14);color:rgba(255,255,255,0.9);">${user.segmento}</span>
+    <span class="value-pill ${valClass}">${user.valor}</span>
+    <span class="gender-badge ${genClass}">${user.genero}</span>
+    <span class="city-pill"><span class="city-dot" style="background:${user.cityColor};"></span>${user.city}</span>`;
+
+  const p = psychoM[user.segmento] || psychoM["Mujer Ejecutiva Premium"];
+  document.getElementById("mCreencias").textContent = p.c;
+  document.getElementById("mMotiv").textContent = p.m;
+  document.getElementById("mNecesidad").textContent = p.n;
+  document.getElementById("mExp").textContent = p.e;
+  document.getElementById("mCuando").textContent = p.cuando;
+  document.getElementById("mDonde").textContent = `${p.donde} Ciudad base: ${user.city}. Cluster: ${user.cluster}.`;
+  document.getElementById("mPorque").textContent = p.porque;
+  document.getElementById("mRec").textContent = `${p.rec} Nivel de enganche actual: ${user.engagement}/100 y estado ${user.loyaltyType.toLowerCase()}.`;
+
+  document.getElementById("profileModal").classList.add("open");
+}
+
+function closeProfileModal(e) {
+  if (!e || e.target === document.getElementById("profileModal")) {
+    document.getElementById("profileModal").classList.remove("open");
+  }
+}
+
+function filterUsers() {
+  const q = document.getElementById("searchUser").value.toUpperCase();
+  const g = document.getElementById("filterGender").value.toUpperCase();
+  const city = document.getElementById("filterCity").value.toUpperCase();
+  document.querySelectorAll("#userTableBody tr").forEach((tr) => {
+    const txt = tr.getAttribute("data-text") || "";
+    const gen = (tr.getAttribute("data-genero") || "").toUpperCase();
+    const rowCity = (tr.getAttribute("data-city") || "").toUpperCase();
+    const matchQ = !q || txt.includes(q);
+    const matchG = !g || gen === g;
+    const matchCity = !city || rowCity === city;
+    tr.style.display = matchQ && matchG && matchCity ? "" : "none";
+  });
+}
+
+const radarChart = new Chart(document.getElementById("radarChart"), {
+  type: "radar",
+  data: {
+    labels: ["Exclusividad", "Innovacion", "Artesania", "Tradicion", "Digital Affinity"],
+    datasets: [{ label: "Perfil Segmento", data: insightData.all.radar, backgroundColor: "rgba(184,146,42,0.10)", borderColor: GOLD, pointBackgroundColor: GOLD }]
+  },
+  options: { maintainAspectRatio: false, scales: { r: { beginAtZero: true, max: 100, ticks: { stepSize: 25, font: { size: 10 } }, grid: { color: "#ece8e0" } } } }
+});
+
+const catLabels = ["Bolsos", "Zapatos", "Accesorios", "Marroq. H.", "Cinturones", "Prendas"];
+const categoryGenderChart = new Chart(document.getElementById("categoryGenderChart"), {
+  type: "bar",
+  data: {
+    labels: catLabels,
+    datasets: [
+      { label: "Mujer", data: insightData.all.catGender[0], backgroundColor: "rgba(190,24,93,0.75)", borderRadius: 5 },
+      { label: "Hombre", data: insightData.all.catGender[1], backgroundColor: "rgba(29,78,216,0.70)", borderRadius: 5 }
+    ]
+  },
+  options: { maintainAspectRatio: false, plugins: { legend: { labels: { font: { size: 11 } } } }, scales: { y: { grid: { color: "#f0ece6" } }, x: { grid: { display: false } } } }
+});
+
+const ocasionesChart = new Chart(document.getElementById("ocasionesChart"), {
+  type: "doughnut",
+  data: {
+    labels: ["Regalo Ocasion Especial", "Autoregalo Premium", "Consumo Aspiracional", "Regalo Corporativo", "Aniversario"],
+    datasets: [{ data: insightData.all.ocasiones, backgroundColor: [NAVY, GOLD, NAVY_M, AMB, GREEN], borderWidth: 0, hoverOffset: 8 }]
+  },
+  options: { maintainAspectRatio: false, cutout: "58%", plugins: { legend: { position: "bottom", labels: { font: { size: 11 }, boxWidth: 10, padding: 10 } } } }
+});
+
+function renderChannelRows(data) {
+  const labels = ["Boutique Exclusiva", "E-commerce Premium", "Tienda Departamental"];
+  const colors = [NAVY, GOLD, NAVY_M];
+  const wrap = document.getElementById("channelRows");
+  wrap.innerHTML = "";
+  data.forEach((v, i) => {
+    wrap.innerHTML += `<div class="channel-row">
+      <div class="channel-name" style="color:${colors[i]};font-weight:700;">${labels[i]}</div>
+      <div class="channel-bar-wrap"><div class="channel-bar"><div class="channel-bar-fill" style="width:${v}%;background:${colors[i]};"></div></div></div>
+      <div class="channel-meta"><strong>${v}%</strong> de consumers</div>
+    </div>`;
+  });
+}
+renderChannelRows(insightData.all.channels);
+
+function updateInsightData() {
+  const val = document.getElementById("segmentSelect").value;
+  const d = insightData[val];
+  document.getElementById("insightTicket").textContent = d.ticket;
+  document.getElementById("insightProduct").textContent = d.product;
+  document.getElementById("insightChurn").textContent = d.churn;
+  document.getElementById("insightPeak").textContent = d.peak;
+  radarChart.data.datasets[0].data = d.radar;
+  radarChart.update();
+  categoryGenderChart.data.datasets[0].data = d.catGender[0];
+  categoryGenderChart.data.datasets[1].data = d.catGender[1];
+  categoryGenderChart.update();
+  ocasionesChart.data.datasets[0].data = d.ocasiones;
+  ocasionesChart.update();
+  renderChannelRows(d.channels);
+}
+
+new Chart(document.getElementById("funnelChart"), {
+  type: "bar",
+  data: {
+    labels: ["Awareness", "Consideration", "Desire", "Intention", "Purchase", "Repeat", "Loyalty"],
+    datasets: [
+      { label: "Actual", data: [84320, 61554, 44320, 28365, 12196, 6829, 3218], backgroundColor: [NAVY, "#1a3a5c", GOLD, AMB, RED, GREEN, "#c9922a"], borderRadius: 5 },
+      { label: "Potencial", data: [84320, 75000, 62000, 48000, 30000, 18000, 10000], backgroundColor: "rgba(0,0,0,0.04)", borderRadius: 5 }
+    ]
+  },
+  options: { maintainAspectRatio: false, plugins: { legend: { labels: { font: { size: 11 } } } }, scales: { y: { grid: { color: "#f0ece6" } }, x: { grid: { display: false }, ticks: { font: { size: 10 } } } } }
+});
+
+new Chart(document.getElementById("portfolioChart"), {
+  type: "bar",
+  data: {
+    labels: ["Bogota", "Medellin", "Cali", "Barranquilla", "Bucaramanga", "Pereira"],
+    datasets: [
+      { label: "Mario Hernandez (indice luxury)", data: [100, 72, 58, 38, 34, 28], backgroundColor: NAVY, borderRadius: 5 },
+      { label: "Benchmark Sector Moda Premium", data: [80, 65, 52, 45, 40, 35], backgroundColor: "#d4c9bc", borderRadius: 5 }
+    ]
+  },
+  options: { maintainAspectRatio: false, plugins: { legend: { labels: { font: { size: 11 } } } }, scales: { y: { grid: { color: "#f0ece6" } }, x: { grid: { display: false } } } }
+});
+
+function updatePortfolio() {
+  const b = parseInt(document.getElementById("invB").value, 10);
+  const m = parseInt(document.getElementById("invM").value, 10);
+  const c = parseInt(document.getElementById("invC").value, 10);
+  const total = b + m + c;
+  document.getElementById("vB").textContent = b;
+  document.getElementById("vM").textContent = m;
+  document.getElementById("vC").textContent = c;
+  document.getElementById("tB").textContent = `${b}%`;
+  document.getElementById("tM").textContent = `${m}%`;
+  document.getElementById("tC").textContent = `${c}%`;
+  const ti = document.getElementById("totalInv");
+  ti.textContent = `${total}%`;
+  ti.style.color = total > 100 ? "var(--red)" : "var(--navy)";
+  const roi = Math.round(14 + (b * 0.14) + (m * 0.09) + (c * 0.06));
+  document.getElementById("roiVal").textContent = `${roi}%`;
+  const eng = ((b * 0.086 + m * 0.079 + c * 0.071) / 10).toFixed(1);
+  document.getElementById("engProj").textContent = eng;
+  const risk = total > 100 ? "Alto" : b > 65 ? "Medio-Alto" : "Medio";
+  document.getElementById("riskVal").textContent = risk;
+}
+
+new Chart(document.getElementById("tableroChart"), {
+  type: "bar",
+  data: {
+    labels: ["Meta Ads", "Google Ads", "Pinterest Ads", "OOH Premium"],
+    datasets: [
+      { label: "ROAS Actual", data: [6.8, 4.2, 7.2, 0], backgroundColor: [NAVY, GOLD, GREEN, "#ccc"], borderRadius: 6 },
+      { label: "ROAS Target (5.0x)", data: [5, 5, 5, 5], backgroundColor: "rgba(0,0,0,0)", borderColor: "rgba(184,146,42,0.45)", borderWidth: 2, type: "line", pointRadius: 0 }
+    ]
+  },
+  options: { maintainAspectRatio: false, plugins: { legend: { labels: { font: { size: 11 } } } }, scales: { y: { grid: { color: "#f0ece6" }, min: 0, max: 10 }, x: { grid: { display: false } } } }
+});
+
+function updateRangeStyle() {
+  document.querySelectorAll('input[type="range"]').forEach((inp) => {
+    const val = ((inp.value - inp.min) / (inp.max - inp.min)) * 100;
+    inp.style.background = `linear-gradient(to right, var(--gold) ${val}%, var(--ivory-alt) ${val}%)`;
+  });
+}
+
+document.addEventListener("input", (e) => {
+  if (e.target.type === "range") {
+    const val = ((e.target.value - e.target.min) / (e.target.max - e.target.min)) * 100;
+    e.target.style.background = `linear-gradient(to right, var(--gold) ${val}%, var(--ivory-alt) ${val}%)`;
+  }
+});
+
+function updateClock() {
+  const now = new Date();
+  const col = new Date(now.toLocaleString("en-US", { timeZone: "America/Bogota" }));
+  const DIAS = ["Domingo", "Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado"];
+  const MESES = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+  const dia = DIAS[col.getDay()];
+  const d = col.getDate();
+  const mes = MESES[col.getMonth()];
+  const anio = col.getFullYear();
+  const hh = String(col.getHours()).padStart(2, "0");
+  const mm = String(col.getMinutes()).padStart(2, "0");
+  const ss = String(col.getSeconds()).padStart(2, "0");
+  const quarter = col.getMonth() < 3 ? "Q1" : col.getMonth() < 6 ? "Q2" : col.getMonth() < 9 ? "Q3" : "Q4";
+
+  document.getElementById("liveDate").textContent = `${dia} ${d} ${mes} ${anio} | COL`;
+  document.getElementById("liveClock").textContent = `${hh}:${mm}:${ss}`;
+  document.getElementById("sidebarDate").textContent = `${mes} ${anio} | ${quarter} ${anio}`;
+}
+
+function updateEngagement() {
+  const ux = parseInt(document.getElementById("ux").value, 10);
+  const fr = parseInt(document.getElementById("freq").value, 10);
+  const ti = parseInt(document.getElementById("time").value, 10);
+  const target = document.getElementById("targetAudience").value;
+  document.getElementById("valUx").textContent = ux;
+  document.getElementById("valFreq").textContent = fr;
+  document.getElementById("valTime").textContent = ti;
+  const score = ((ux + fr + ti) / 3).toFixed(1);
+  document.getElementById("indiceVal").textContent = score;
+  const cfg = audienceConfig[target];
+  const finalReach = Math.round(cfg.reach * (score / 7));
+  document.getElementById("reachVal").textContent = `${(finalReach / 1000).toFixed(1)}k`;
+  const convBase = score > 7 ? 5.2 : score > 5 ? 3.8 : 2.1;
+  const conv = (convBase + (score - 5) * 0.3).toFixed(1) + "%";
+  document.getElementById("convPred").textContent = conv;
+  const revenue = Math.round((finalReach * parseFloat(score) * 890) / 1000);
+  document.getElementById("revenueImpact").textContent = `+$${revenue.toLocaleString()}M`;
+
+  if (historyChartInstance) {
+    historyChartInstance.data.datasets[0].data[4] = parseFloat(score);
+    historyChartInstance.data.datasets[1].data = Array(5).fill(cfg.avg);
+    historyChartInstance.update();
+  }
+
+  const alertEl = document.getElementById("engagementAlert");
+  let narrative = "";
+  if (score < 5) {
+    alertEl.className = "alert-banner mt-16";
+    alertEl.innerHTML = "⚠️ <span><strong>Score Critico:</strong> El segmento luxury muestra baja receptividad. Riesgo de deterioro de brand equity si se mantiene presion publicitaria.</span>";
+    narrative = `Con un Luxury Score de ${score}/10, el segmento <strong>${cfg.label}</strong> muestra senales de fatiga o baja afinidad. Recomendado: pausar performance, activar brand story y reducir frecuencia de impacto.`;
+  } else if (score < 7) {
+    alertEl.className = "alert-banner gold mt-16";
+    alertEl.innerHTML = "⚡ <span><strong>Score Moderado:</strong> Existe margen significativo para mejorar percepcion de marca y experiencia en boutique.</span>";
+    narrative = `Luxury Score de ${score}/10 para <strong>${cfg.label}</strong>. El segmento tiene potencial sin desarrollar. Priorizar storytelling artesanal y asesoria personalizada.`;
+  } else {
+    alertEl.className = "alert-banner green mt-16";
+    alertEl.innerHTML = "✅ <span><strong>Configuracion Optima:</strong> El segmento luxury responde favorablemente. Escalar inversion con alto confidence de retorno premium.</span>";
+    narrative = `Excelente Luxury Score de ${score}/10 para <strong>${cfg.label}</strong>. Escenario favorable para escalar inversion. Conversion proyectada de ${conv} con impacto de +$${revenue.toLocaleString()}M COP.`;
+  }
+  document.getElementById("simNarrative").innerHTML = narrative;
+}
+
+buildUsers();
+const overviewStats = getOverviewStats();
+const securityStats = getSecurityStats();
+const commandCenterData = getCommandCenterData();
+populateOverviewMetrics(overviewStats);
+populateCityFilter();
+initHomeCharts(overviewStats);
+populateSecurityOverview(securityStats);
+initSecurityCharts(securityStats);
+renderSecurityTable();
+renderCommandCenter(commandCenterData);
+
+window.addEventListener("load", () => {
+  historyChartInstance = new Chart(document.getElementById("historyChart"), {
+    type: "line",
+    data: {
+      labels: ["Sem 1", "Sem 2", "Sem 3", "Sem 4", "Hoy"],
+      datasets: [
+        { label: "Score Actual", data: [6, 6.2, 6.5, 6.8, 5.6], borderColor: GOLD, backgroundColor: "rgba(184,146,42,0.07)", fill: true, tension: 0.4, pointBackgroundColor: GOLD, pointRadius: 4 },
+        { label: "Avg Historico", data: [7.2, 7.2, 7.2, 7.2, 7.2], borderColor: "#b5bec8", borderDash: [5, 5], fill: false, pointRadius: 0 }
+      ]
+    },
+    options: { maintainAspectRatio: false, scales: { y: { min: 0, max: 10, grid: { color: "#f0ece6" } }, x: { grid: { display: false } } }, plugins: { legend: { labels: { font: { size: 11 } } } } }
+  });
+
+  updatePortfolio();
+  updateEngagement();
+  updateRangeStyle();
+  updateClock();
+  showFromHash();
+  setInterval(updateClock, 1000);
+});
 </script>
-
 </body>
 </html>
